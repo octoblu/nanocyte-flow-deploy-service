@@ -1,0 +1,47 @@
+{
+  "name": "nanocyte-flow-deploy-service",
+  "version": "1.0.0",
+  "description": "Flow Deploy Service for Nanocyte",
+  "main": "server.js",
+  "scripts": {
+    "test": "istanbul cover _mocha -- -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/octoblu/nanocyte-flow-deploy-service.git"
+  },
+  "keywords": [
+    "nanocyte",
+    "octoblu"
+  ],
+  "author": "Octoblu <npm@octoblu.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/octoblu/nanocyte-flow-deploy-service/issues"
+  },
+  "homepage": "https://github.com/octoblu/nanocyte-flow-deploy-service#readme",
+  "dependencies": {
+    "async": "^1.4.2",
+    "body-parser": "^1.13.3",
+    "coffee-script": "^1.10.0",
+    "debug": "^2.2.0",
+    "errorhandler": "^1.4.2",
+    "escape-string-regexp": "^1.0.3",
+    "express": "^4.13.3",
+    "express-meshblu-healthcheck": "^1.0.1",
+    "lodash": "^3.10.1",
+    "lodash-deep": "^1.6.0",
+    "meshblu-http": "^3.4.1",
+    "morgan": "^1.6.1"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "coffee-coverage": "^0.6.3",
+    "coffee-script": "^1.10.0",
+    "istanbul": "^0.3.20",
+    "mocha": "^2.3.2",
+    "mocha-istanbul": "^0.2.0",
+    "sinon": "^1.16.1",
+    "sinon-chai": "^2.8.0"
+  }
+}
