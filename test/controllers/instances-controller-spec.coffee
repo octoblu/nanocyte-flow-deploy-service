@@ -3,6 +3,7 @@ NanocyteDeployer = require 'nanocyte-deployer'
 
 describe '/instances', ->
   beforeEach ->
+    process.env['OCTOBLU_URL'] = 'yahho.com'
     @response =
       location: sinon.spy => @response
       status: sinon.spy => @response
@@ -30,8 +31,8 @@ describe '/instances', ->
         params:
           flowId: 'some-flow-uuid'
         meshbluAuth:
-          uuid: 'user-uuid'
-          token: 'user-token'
+          uuid: 'the-user-uuid'
+          token: 'the-user-token'
 
       @nodeUuid.v1.returns 'an-instance-uuid'
       @sut.create request, @response
@@ -42,7 +43,7 @@ describe '/instances', ->
         @nanocyteDeployer.deploy.yield null
 
       it 'should call _createMeshbluHttp', ->
-        expect(@_createMeshbluHttp).to.have.been.calledWith uuid: 'user-uuid', token: 'user-token'
+        expect(@_createMeshbluHttp).to.have.been.calledWith uuid: 'the-user-uuid', token: 'the-user-token'
 
       it 'should call generateAndStoreToken', ->
         expect(@meshbluHttp.generateAndStoreToken).to.have.been.calledWith 'some-flow-uuid'
@@ -50,8 +51,14 @@ describe '/instances', ->
       it 'should call deploy on the nanocyte deployer', ->
         expect(@nanocyteDeployer.deploy).to.have.been.called
 
-      xit 'should call _createNanocyteDeployer', -> # failing for some reason
-        expect(@_createNanocyteDeployer).to.have.been.calledWith flowId: 'some-flow-uuid', instanceId: 'an-instance-uuid', flowToken: 'cool-token-bro'
+      it 'should call _createNanocyteDeployer', ->
+        expect(@_createNanocyteDeployer).to.have.been.calledWith
+          flowUuid: 'some-flow-uuid'
+          instanceId: 'an-instance-uuid'
+          flowToken: 'cool-token-bro'
+          userUuid: 'the-user-uuid'
+          userToken: 'the-user-token'
+          octobluUrl: 'yahho.com'
 
       describe 'and startFlow fails', ->
         beforeEach ->
@@ -90,6 +97,9 @@ describe '/instances', ->
       request =
         params:
           flowId: 'some-other-flow-uuid'
+        meshbluAuth:
+          uuid: 'the-user-uuid'
+          token: 'the-user-token'
 
       @nodeUuid.v1.returns 'an-instance-uuid'
       @sut.create request, @response
@@ -103,8 +113,14 @@ describe '/instances', ->
       it 'should call generateAndStoreToken', ->
         expect(@meshbluHttp.generateAndStoreToken).to.have.been.calledWith 'some-other-flow-uuid'
 
-      xit 'should call _createNanocyteDeployer', -> # failing for some reason
-        expect(@_createNanocyteDeployer).to.have.been.calledWith flowId: 'some-other-flow-uuid', instanceId: 'an-instance-uuid', flowToken: 'do-you-even-token-bro'
+      it 'should call _createNanocyteDeployer', ->
+        expect(@_createNanocyteDeployer).to.have.been.calledWith
+          flowUuid: 'some-other-flow-uuid'
+          instanceId: 'an-instance-uuid'
+          flowToken: 'do-you-even-token-bro'
+          userUuid: 'the-user-uuid'
+          userToken: 'the-user-token'
+          octobluUrl: 'yahho.com'
 
       it 'should respond with a 201', ->
         expect(@response.status).to.have.been.calledWith 201
@@ -119,6 +135,9 @@ describe '/instances', ->
       request =
         params:
           flowId: 'some-other-new-flow-uuid'
+        meshbluAuth:
+          uuid: 'the-user-uuid'
+          token: 'the-user-token'
 
       @nodeUuid.v1.returns 'a-new-instance-uuid'
       @sut.create request, @response
@@ -129,8 +148,14 @@ describe '/instances', ->
         @nanocyteDeployer.deploy.yield null
         @nanocyteDeployer.startFlow.yield null
 
-      xit 'should call _createNanocyteDeployer', -> # failing for some reason
-        expect(@_createNanocyteDeployer).to.have.been.calledWith flowId: 'some-other-new-flow-uuid', instanceId: 'a-new-instance-uuid', flowToken: 'lame-token-bro'
+      it 'should call _createNanocyteDeployer', ->
+        expect(@_createNanocyteDeployer).to.have.been.calledWith
+          flowUuid: 'some-other-new-flow-uuid'
+          instanceId: 'a-new-instance-uuid'
+          flowToken: 'lame-token-bro'
+          userUuid: 'the-user-uuid'
+          userToken: 'the-user-token'
+          octobluUrl: 'yahho.com'
 
       it 'should respond with a 201', ->
         expect(@response.status).to.have.been.calledWith 201

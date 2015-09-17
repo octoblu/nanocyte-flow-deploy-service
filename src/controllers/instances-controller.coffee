@@ -15,13 +15,17 @@ class InstancesController
   create: (request, response) =>
     flowId = request.params.flowId
     instanceId = @nodeUuid.v1()
+    meshbluAuth = request.meshbluAuth
 
-    @meshbluHttp = @_createMeshbluHttp request.meshbluAuth
+    @meshbluHttp = @_createMeshbluHttp meshbluAuth
     @meshbluHttp.generateAndStoreToken flowId, (error, result) =>
       options =
         flowUuid: flowId
         instanceId: instanceId
         flowToken: result?.token
+        userUuid: meshbluAuth.uuid
+        userToken: meshbluAuth.token
+        octobluUrl: process.env.OCTOBLU_URL
 
       @nanocyteDeployer = @_createNanocyteDeployer options
       @nanocyteDeployer.deploy (error) =>
