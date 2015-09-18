@@ -26,6 +26,7 @@ class InstancesController
         userUuid: meshbluAuth.uuid
         userToken: meshbluAuth.token
         octobluUrl: process.env.OCTOBLU_URL
+        forwardUrl: "#{process.env.NANOCYTE_ENGINE_URL}/flows/#{flowId}/instances/#{instanceId}/messages"
 
       @nanocyteDeployer = @_createNanocyteDeployer options
       @nanocyteDeployer.deploy (error) =>
