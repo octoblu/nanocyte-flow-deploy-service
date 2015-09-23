@@ -9,9 +9,10 @@ describe '/instances', ->
       location: sinon.spy => @response
       status: sinon.spy => @response
       end: sinon.spy => @response
+      send: sinon.spy => @response
 
-    @nodeUuid =
-      v1: sinon.stub()
+    @UUID =
+      v4: sinon.stub()
 
     @nanocyteDeployer =
       deploy: sinon.stub()
@@ -20,7 +21,7 @@ describe '/instances', ->
     @meshbluHttp =
       generateAndStoreToken: sinon.stub()
 
-    @sut = new InstancesController nodeUuid: @nodeUuid
+    @sut = new InstancesController UUID: @UUID
     @_createNanocyteDeployer = sinon.stub @sut, '_createNanocyteDeployer'
     @_createNanocyteDeployer.returns @nanocyteDeployer
     @_createMeshbluHttp = sinon.stub @sut, '_createMeshbluHttp'
@@ -35,7 +36,7 @@ describe '/instances', ->
           uuid: 'the-user-uuid'
           token: 'the-user-token'
 
-      @nodeUuid.v1.returns 'an-instance-uuid'
+      @UUID.v4.returns 'an-instance-uuid'
       @sut.create request, @response
 
     describe 'when deploy is successful', ->
@@ -68,7 +69,7 @@ describe '/instances', ->
 
         it 'should respond with a 422', ->
           expect(@response.status).to.have.been.calledWith 422
-          expect(@response.end).to.have.been.called
+          expect(@response.send).to.have.been.calledWith 'something wrong'
 
         it 'should call startFlow on the nanocyte deployer', ->
           expect(@nanocyteDeployer.startFlow).to.have.been.called
@@ -92,7 +93,7 @@ describe '/instances', ->
 
       it 'should respond with a 422', ->
         expect(@response.status).to.have.been.calledWith 422
-        expect(@response.end).to.have.been.called
+        expect(@response.send).to.have.been.calledWith 'something wrong'
 
   describe 'when /instances receives a different message', ->
     beforeEach ->
@@ -103,7 +104,7 @@ describe '/instances', ->
           uuid: 'the-user-uuid'
           token: 'the-user-token'
 
-      @nodeUuid.v1.returns 'an-instance-uuid'
+      @UUID.v4.returns 'an-instance-uuid'
       @sut.create request, @response
 
     describe 'when deploy is successful', ->
@@ -142,7 +143,7 @@ describe '/instances', ->
           uuid: 'the-user-uuid'
           token: 'the-user-token'
 
-      @nodeUuid.v1.returns 'a-new-instance-uuid'
+      @UUID.v4.returns 'a-new-instance-uuid'
       @sut.create request, @response
 
     describe 'when deploy is successful', ->

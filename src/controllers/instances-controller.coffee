@@ -7,14 +7,14 @@ ConfigurationSaver = require 'nanocyte-configuration-saver-redis'
 
 class InstancesController
   constructor: (dependencies={}) ->
-    {@NanocyteDeployer, @nodeUuid} = dependencies
+    {@NanocyteDeployer, @UUID} = dependencies
     @NanocyteDeployer ?= require 'nanocyte-deployer'
-    @nodeUuid ?= require 'node-uuid'
+    @UUID ?= require 'node-uuid'
     @meshbluConfig = new MeshbluConfig
 
   create: (request, response) =>
     flowId = request.params.flowId
-    instanceId = @nodeUuid.v1()
+    instanceId = @UUID.v4()
     meshbluAuth = request.meshbluAuth
 
     @meshbluHttp = @_createMeshbluHttp meshbluAuth
@@ -30,9 +30,9 @@ class InstancesController
 
       @nanocyteDeployer = @_createNanocyteDeployer options
       @nanocyteDeployer.deploy (error) =>
-        return response.status(422).end() if error?
+        return response.status(422).send(error.message) if error?
         @nanocyteDeployer.startFlow (error) =>
-          return response.status(422).end() if error?
+          return response.status(422).send(error.message) if error?
           response.status(201).location("/flows/#{flowId}/instances/#{instanceId}").end()
 
   _createNanocyteDeployer: (options) =>
