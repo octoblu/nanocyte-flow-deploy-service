@@ -38,7 +38,7 @@ class InstancesController
   _createNanocyteDeployer: (options) =>
     client = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD
     dependencies =
-      configurationGenerator: new ConfigurationGenerator @meshbluConfig.toJSON()
+      configurationGenerator: new ConfigurationGenerator registryUrl: process.env.NODE_REGISTRY_URL, meshbluJSON: @meshbluConfig.toJSON()
       configurationSaver: new ConfigurationSaver client
 
     new @NanocyteDeployer options, dependencies
