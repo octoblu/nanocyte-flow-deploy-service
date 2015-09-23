@@ -2,8 +2,10 @@
 # meshbluAuth:
 #   uuid: 'user-uuid'
 #   token: 'user-token
+USER_UUID="af354bd1-988f-4905-bba7-98b87f84eabe"
+USER_TOKEN="b52d705520c9adf5e64afce81dc0d538095f2b09"
 FLOW_UUID='dd3d787a-7833-4581-9287-3ad2c5a1273a'
-FLOW_TOKEN='b24285d321c65758f4b43c34fd494467b4b8622e'
 
-URL="http://$FLOW_UUID:$FLOW_TOKEN@localhost:5051/flows/$FLOW_UUID/instances"
-curl -i -X POST -H 'Content-Type: application/json' -d "$DATA" "$URL"
+#URL="http://$USER_UUID:$USER_TOKEN@nanocyte-flow-deploy.octoblu.com/flows/$FLOW_UUID/instances"
+URL="http://$USER_UUID:$USER_TOKEN@localhost:5051/flows/$FLOW_UUID/instances"
+curl --silent -i -X POST -H 'Content-Type: application/json' -d "$DATA" "$URL"
