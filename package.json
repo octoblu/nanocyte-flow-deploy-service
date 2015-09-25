@@ -37,7 +37,7 @@
     "morgan": "^1.6.1",
     "nanocyte-configuration-generator": "^1.12.0",
     "nanocyte-configuration-saver-redis": "^1.3.0",
-    "nanocyte-deployer": "^1.6.0",
+    "nanocyte-deployer": "^1.7.0",
     "node-uuid": "^1.4.3",
     "redis": "^1.0.0"
   },
