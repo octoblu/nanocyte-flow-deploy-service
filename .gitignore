@@ -27,3 +27,4 @@ build/Release
 node_modules
 start-flow.sh
 get-flow.sh
+channels.json
