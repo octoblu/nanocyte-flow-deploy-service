@@ -23,6 +23,7 @@ app.use bodyParser.urlencoded limit: '50mb', extended : true
 app.use bodyParser.json limit : '50mb'
 
 app.post '/flows/:flowId/instances', instancesController.create
+app.del '/flows/:flowId/instances', instancesController.destroy
 
 server = app.listen PORT, ->
   host = server.address().address
