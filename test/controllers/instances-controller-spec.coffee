@@ -30,6 +30,7 @@ describe '/instances', ->
   describe 'when /instances receives a message', ->
     beforeEach ->
       request =
+        get: sinon.stub().withArgs('deploymentUuid').returns('the-deployment-uuid')
         params:
           flowId: 'some-flow-uuid'
         meshbluAuth:
@@ -55,6 +56,7 @@ describe '/instances', ->
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
+          deploymentUuid: 'the-deployment-uuid'
           flowUuid: 'some-flow-uuid'
           instanceId: 'an-instance-uuid'
           flowToken: 'cool-token-bro'
@@ -98,6 +100,7 @@ describe '/instances', ->
   describe 'when /instances receives a different message', ->
     beforeEach ->
       request =
+        get: sinon.stub().withArgs('deploymentUuid').returns('some-other-deployment-uuid')
         params:
           flowId: 'some-other-flow-uuid'
         meshbluAuth:
@@ -118,6 +121,7 @@ describe '/instances', ->
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
+          deploymentUuid: 'some-other-deployment-uuid'
           flowUuid: 'some-other-flow-uuid'
           instanceId: 'an-instance-uuid'
           flowToken: 'do-you-even-token-bro'
@@ -137,6 +141,7 @@ describe '/instances', ->
   describe 'when nanocyte deployer is given a new instance uuid', ->
     beforeEach ->
       request =
+        get: sinon.stub().withArgs('deploymentUuid').returns 'this-deployment-uuid'
         params:
           flowId: 'some-other-new-flow-uuid'
         meshbluAuth:
@@ -154,6 +159,7 @@ describe '/instances', ->
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
+          deploymentUuid: 'this-deployment-uuid'
           flowUuid: 'some-other-new-flow-uuid'
           instanceId: 'a-new-instance-uuid'
           flowToken: 'lame-token-bro'
