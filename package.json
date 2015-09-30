@@ -1,6 +1,6 @@
 {
   "name": "nanocyte-flow-deploy-service",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "description": "Flow Deploy Service for Nanocyte",
   "main": "server.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "morgan": "^1.6.1",
     "nanocyte-configuration-generator": "^1.15.5",
     "nanocyte-configuration-saver-redis": "^1.5.0",
-    "nanocyte-deployer": "^1.9.1",
+    "nanocyte-deployer": "^1.11.0",
     "node-uuid": "^1.4.3",
     "redis": "^1.0.0"
   },
