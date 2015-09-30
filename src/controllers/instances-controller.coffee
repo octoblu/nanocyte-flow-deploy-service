@@ -16,6 +16,7 @@ class InstancesController
     flowId = request.params.flowId
     instanceId = @UUID.v4()
     meshbluAuth = request.meshbluAuth
+    deploymentUuid = request.get('deploymentUuid') ? 'nanocyte-flow-deploy-default'
 
     @meshbluHttp = @_createMeshbluHttp meshbluAuth
     @meshbluHttp.generateAndStoreToken flowId, (error, result) =>
@@ -25,6 +26,7 @@ class InstancesController
         flowToken: result?.token
         userUuid: meshbluAuth.uuid
         userToken: meshbluAuth.token
+        deploymentUuid: deploymentUuid
         octobluUrl: process.env.OCTOBLU_URL
         forwardUrl: "#{process.env.NANOCYTE_ENGINE_URL}/flows/#{flowId}/instances/#{instanceId}/messages"
 
@@ -43,6 +45,7 @@ class InstancesController
         meshbluJSON:     @meshbluConfig.toJSON()
         accessKeyId:     process.env.AWS_ACCESS_KEY_ID
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        deploymentUuid:  options.deploymentUuid
       configurationSaver: new ConfigurationSaver client
 
     new @NanocyteDeployer options, dependencies
