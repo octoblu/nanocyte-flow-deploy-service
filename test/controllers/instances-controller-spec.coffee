@@ -16,7 +16,9 @@ describe '/instances', ->
 
     @nanocyteDeployer =
       deploy: sinon.stub()
+      destroy: sinon.stub()
       startFlow: sinon.stub()
+      stopFlow: sinon.stub()
 
     @meshbluHttp =
       generateAndStoreToken: sinon.stub()
@@ -27,7 +29,7 @@ describe '/instances', ->
     @_createMeshbluHttp = sinon.stub @sut, '_createMeshbluHttp'
     @_createMeshbluHttp.returns @meshbluHttp
 
-  describe 'when /instances receives a message', ->
+  describe 'when /instances receives a post message', ->
     beforeEach ->
       request =
         get: sinon.stub().withArgs('deploymentUuid').returns('the-deployment-uuid')
@@ -97,7 +99,7 @@ describe '/instances', ->
         expect(@response.status).to.have.been.calledWith 422
         expect(@response.send).to.have.been.calledWith 'something wrong'
 
-  describe 'when /instances receives a different message', ->
+  describe 'when /instances receives a different post message', ->
     beforeEach ->
       request =
         get: sinon.stub().withArgs('deploymentUuid').returns('some-other-deployment-uuid')
@@ -138,7 +140,7 @@ describe '/instances', ->
       it 'should call deploy on the nanocyte deployer', ->
         expect(@nanocyteDeployer.deploy).to.have.been.called
 
-  describe 'when nanocyte deployer is given a new instance uuid', ->
+  describe 'when nanocyte deployer is given a new instance uuid with post', ->
     beforeEach ->
       request =
         get: sinon.stub().withArgs('deploymentUuid').returns 'this-deployment-uuid'
@@ -175,3 +177,86 @@ describe '/instances', ->
 
       it 'should call deploy on the nanocyte deployer', ->
         expect(@nanocyteDeployer.deploy).to.have.been.called
+
+  describe 'when /instances receives a delete message', ->
+    beforeEach ->
+      request =
+        get: sinon.stub().withArgs('deploymentUuid').returns 'this-deployment-uuid'
+        params:
+          flowId: 'some-flow-uuid'
+        meshbluAuth:
+          uuid: 'awesome-user-uuid'
+          token: 'super-cool-user-token'
+
+      @UUID.v4.returns 'an-instance-uuid'
+      @sut.destroy request, @response
+
+    describe 'when stopFlow is successful', ->
+      beforeEach ->
+        @meshbluHttp.generateAndStoreToken.yield null, token: 'cool-token-bro'
+        @nanocyteDeployer.stopFlow.yield null
+
+      it 'should call generateAndStoreToken', ->
+        expect(@meshbluHttp.generateAndStoreToken).to.have.been.calledWith 'some-flow-uuid'
+
+      it 'should call _createNanocyteDeployer', ->
+        expect(@_createNanocyteDeployer).to.have.been.calledWith
+          flowUuid: 'some-flow-uuid'
+          instanceId: 'an-instance-uuid'
+          flowToken: 'cool-token-bro'
+          userUuid: 'awesome-user-uuid'
+          userToken: 'super-cool-user-token'
+          deploymentUuid: 'this-deployment-uuid'
+          octobluUrl: 'http://yahho.com'
+          forwardUrl: 'https://genisys.com/flows/some-flow-uuid/instances/an-instance-uuid/messages'
+
+      it 'should call nanocyteDeployer.stopFlow', ->
+        expect(@nanocyteDeployer.stopFlow).to.have.been.called
+
+      describe 'and nanocyteDeployer.destroy is a success', ->
+        beforeEach ->
+          @nanocyteDeployer.destroy.yield null
+
+        it 'should call nanocyteDeployer.destroy', ->
+          expect(@nanocyteDeployer.destroy).to.have.been.called
+
+        it 'should respond with a 201', ->
+          expect(@response.status).to.have.been.calledWith 201
+          expect(@response.end).to.have.been.called
+
+      describe 'and nanocyteDeployer.destroy is a failure', ->
+        beforeEach ->
+          @nanocyteDeployer.destroy.yield new Error "wrong things happened"
+
+        it 'should call nanocyteDeployer.destroy', ->
+          expect(@nanocyteDeployer.destroy).to.have.been.called
+
+        it 'should respond with a 422', ->
+          expect(@response.status).to.have.been.calledWith 422
+          expect(@response.send).to.have.been.calledWith "wrong things happened"
+
+    describe 'when stopFlow is failure', ->
+      beforeEach ->
+        @meshbluHttp.generateAndStoreToken.yield null, token: 'cool-token-bro'
+        @nanocyteDeployer.stopFlow.yield new Error "Oh no!"
+
+      it 'should call generateAndStoreToken', ->
+        expect(@meshbluHttp.generateAndStoreToken).to.have.been.calledWith 'some-flow-uuid'
+
+      it 'should call _createNanocyteDeployer', ->
+        expect(@_createNanocyteDeployer).to.have.been.calledWith
+          deploymentUuid: 'this-deployment-uuid'
+          flowUuid: 'some-flow-uuid'
+          instanceId: 'an-instance-uuid'
+          flowToken: 'cool-token-bro'
+          userUuid: 'awesome-user-uuid'
+          userToken: 'super-cool-user-token'
+          octobluUrl: 'http://yahho.com'
+          forwardUrl: 'https://genisys.com/flows/some-flow-uuid/instances/an-instance-uuid/messages'
+
+      it 'should respond with a 422 and Error', ->
+        expect(@response.status).to.have.been.calledWith 422
+        expect(@response.send).to.have.been.calledWith 'Oh no!'
+
+      it 'should call nanocyteDeployer.stopFlow', ->
+        expect(@nanocyteDeployer.stopFlow).to.have.been.called
