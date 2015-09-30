@@ -30,7 +30,9 @@ class InstancesController
       @nanocyteDeployer = @_createNanocyteDeployer options
       @nanocyteDeployer.stopFlow (error) =>
         return response.status(422).send(error.message) if error?
-        response.status(201).end()
+        @nanocyteDeployer.destroy flowId: options.flowUuid, (error) =>
+          return response.status(422).send(error.message) if error?
+          response.status(201).end()
 
   _createNanocyteDeployer: (options) =>
     client = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD

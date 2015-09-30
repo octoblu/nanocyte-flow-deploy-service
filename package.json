@@ -1,6 +1,6 @@
 {
   "name": "nanocyte-flow-deploy-service",
-  "version": "1.13.1",
+  "version": "1.13.2",
   "description": "Flow Deploy Service for Nanocyte",
   "main": "server.js",
   "scripts": {

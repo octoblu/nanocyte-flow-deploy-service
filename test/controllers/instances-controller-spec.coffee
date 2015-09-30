@@ -16,6 +16,7 @@ describe '/instances', ->
 
     @nanocyteDeployer =
       deploy: sinon.stub()
+      destroy: sinon.stub()
       startFlow: sinon.stub()
       stopFlow: sinon.stub()
 
@@ -190,7 +191,7 @@ describe '/instances', ->
       @UUID.v4.returns 'an-instance-uuid'
       @sut.destroy request, @response
 
-    describe 'when destroy is successful', ->
+    describe 'when stopFlow is successful', ->
       beforeEach ->
         @meshbluHttp.generateAndStoreToken.yield null, token: 'cool-token-bro'
         @nanocyteDeployer.stopFlow.yield null
@@ -209,14 +210,32 @@ describe '/instances', ->
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-flow-uuid/instances/an-instance-uuid/messages'
 
-      it 'should respond with a 201', ->
-        expect(@response.status).to.have.been.calledWith 201
-        expect(@response.end).to.have.been.called
-
       it 'should call nanocyteDeployer.stopFlow', ->
         expect(@nanocyteDeployer.stopFlow).to.have.been.called
 
-    describe 'when destroy is failure', ->
+      describe 'and nanocyteDeployer.destroy is a success', ->
+        beforeEach ->
+          @nanocyteDeployer.destroy.yield null
+
+        it 'should call nanocyteDeployer.destroy', ->
+          expect(@nanocyteDeployer.destroy).to.have.been.called
+
+        it 'should respond with a 201', ->
+          expect(@response.status).to.have.been.calledWith 201
+          expect(@response.end).to.have.been.called
+
+      describe 'and nanocyteDeployer.destroy is a failure', ->
+        beforeEach ->
+          @nanocyteDeployer.destroy.yield new Error "wrong things happened"
+
+        it 'should call nanocyteDeployer.destroy', ->
+          expect(@nanocyteDeployer.destroy).to.have.been.called
+
+        it 'should respond with a 422', ->
+          expect(@response.status).to.have.been.calledWith 422
+          expect(@response.send).to.have.been.calledWith "wrong things happened"
+
+    describe 'when stopFlow is failure', ->
       beforeEach ->
         @meshbluHttp.generateAndStoreToken.yield null, token: 'cool-token-bro'
         @nanocyteDeployer.stopFlow.yield new Error "Oh no!"
