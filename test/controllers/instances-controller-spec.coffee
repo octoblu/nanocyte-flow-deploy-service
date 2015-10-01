@@ -4,6 +4,7 @@ NanocyteDeployer = require 'nanocyte-deployer'
 describe '/instances', ->
   beforeEach ->
     process.env['OCTOBLU_URL'] = 'http://yahho.com'
+    process.env['FLOW_LOGGER_UUID'] = 'flow-logger-uuid'
     process.env['NANOCYTE_ENGINE_URL'] = 'https://genisys.com'
     @response =
       location: sinon.spy => @response
@@ -66,6 +67,7 @@ describe '/instances', ->
           userToken: 'the-user-token'
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-flow-uuid/instances/an-instance-uuid/messages'
+          flowLoggerUuid: 'flow-logger-uuid'
 
       describe 'and startFlow fails', ->
         beforeEach ->
@@ -131,6 +133,7 @@ describe '/instances', ->
           userToken: 'the-user-token'
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-other-flow-uuid/instances/an-instance-uuid/messages'
+          flowLoggerUuid: 'flow-logger-uuid'
 
       it 'should respond with a 201', ->
         expect(@response.status).to.have.been.calledWith 201
@@ -169,6 +172,7 @@ describe '/instances', ->
           userToken: 'the-user-token'
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-other-new-flow-uuid/instances/a-new-instance-uuid/messages'
+          flowLoggerUuid: 'flow-logger-uuid'
 
       it 'should respond with a 201', ->
         expect(@response.status).to.have.been.calledWith 201
@@ -209,6 +213,7 @@ describe '/instances', ->
           deploymentUuid: 'this-deployment-uuid'
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-flow-uuid/instances/an-instance-uuid/messages'
+          flowLoggerUuid: 'flow-logger-uuid'
 
       it 'should call nanocyteDeployer.stopFlow', ->
         expect(@nanocyteDeployer.stopFlow).to.have.been.called
@@ -253,6 +258,7 @@ describe '/instances', ->
           userToken: 'super-cool-user-token'
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-flow-uuid/instances/an-instance-uuid/messages'
+          flowLoggerUuid: 'flow-logger-uuid'
 
       it 'should respond with a 422 and Error', ->
         expect(@response.status).to.have.been.calledWith 422

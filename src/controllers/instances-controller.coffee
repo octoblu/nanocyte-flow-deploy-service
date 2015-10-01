@@ -61,5 +61,6 @@ class InstancesController
       deploymentUuid: request.get('deploymentUuid') ? 'nanocyte-flow-deploy-default'
       octobluUrl: process.env.OCTOBLU_URL
       forwardUrl: "#{process.env.NANOCYTE_ENGINE_URL}/flows/#{request.params.flowId}/instances/#{instanceId}/messages"
+      flowLoggerUuid:  process.env.FLOW_LOGGER_UUID
     }
 module.exports = InstancesController
