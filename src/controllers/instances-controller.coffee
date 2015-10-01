@@ -30,7 +30,7 @@ class InstancesController
       @nanocyteDeployer = @_createNanocyteDeployer options
       @nanocyteDeployer.stopFlow (error) =>
         return response.status(422).send(error.message) if error?
-        @nanocyteDeployer.destroy flowId: options.flowUuid, (error) =>
+        @nanocyteDeployer.destroy (error) =>
           return response.status(422).send(error.message) if error?
           response.status(201).end()
 
