@@ -1,7 +1,11 @@
 {
   "name": "nanocyte-flow-deploy-service",
-  "version": "1.14.13",
+  "version": "1.14.14",
   "description": "Flow Deploy Service for Nanocyte",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "engineStrict": true,
   "main": "server.js",
   "scripts": {
     "test": "istanbul cover _mocha -- -R spec"
@@ -37,7 +41,7 @@
     "morgan": "^1.6.1",
     "nanocyte-configuration-generator": "^1.21.2",
     "nanocyte-configuration-saver-redis": "^1.6.1",
-    "nanocyte-deployer": "^1.13.4",
+    "nanocyte-deployer": "^1.13.6",
     "node-uuid": "^1.4.3",
     "redis": "^1.0.0"
   },
@@ -48,6 +52,7 @@
     "istanbul": "^0.3.20",
     "mocha": "^2.3.3",
     "mocha-istanbul": "^0.2.0",
+    "semver": "^5.0.3",
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0"
   }
