@@ -4,6 +4,7 @@ MeshbluConfig = require 'meshblu-config'
 MeshbluHttp = require 'meshblu-http'
 ConfigurationGenerator = require 'nanocyte-configuration-generator'
 ConfigurationSaver = require 'nanocyte-configuration-saver-redis'
+client = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD
 
 class InstancesController
   constructor: (dependencies={}) ->
@@ -35,7 +36,6 @@ class InstancesController
           response.status(201).end()
 
   _createNanocyteDeployer: (options) =>
-    client = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD
     meshbluConfig = new MeshbluConfig server_env_name: 'MESHBLU_MESSAGES_SERVER'
     dependencies =
       configurationGenerator: new ConfigurationGenerator
