@@ -1,6 +1,6 @@
 {
   "name": "nanocyte-flow-deploy-service",
-  "version": "1.15.10",
+  "version": "1.15.11",
   "description": "Flow Deploy Service for Nanocyte",
   "engines": {
     "node": ">=4.0.0"
@@ -55,5 +55,8 @@
     "semver": "^5.0.3",
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0"
+  },
+  "optionalDependencies": {
+    "hiredis": "^0.4.1"
   }
 }
