@@ -1,6 +1,6 @@
 {
   "name": "nanocyte-flow-deploy-service",
-  "version": "1.15.5",
+  "version": "1.15.9",
   "description": "Flow Deploy Service for Nanocyte",
   "engines": {
     "node": ">=4.0.0"
@@ -39,7 +39,7 @@
     "meshblu-config": "^3.1.1",
     "meshblu-http": "^3.4.1",
     "morgan": "^1.6.1",
-    "nanocyte-configuration-generator": "^1.22.0",
+    "nanocyte-configuration-generator": "^1.22.5",
     "nanocyte-configuration-saver-redis": "^1.6.1",
     "nanocyte-deployer": "^1.15.0",
     "node-uuid": "^1.4.3",
