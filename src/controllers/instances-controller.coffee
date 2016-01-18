@@ -16,6 +16,7 @@ class InstancesController
   create: (request, response) =>
     @meshbluHttp = @_createMeshbluHttp request.meshbluAuth
     @meshbluHttp.generateAndStoreToken request.params.flowId, (error, result) =>
+      return response.status(403).send(error.message) if error?
       options = @_buildOptions request, result
       @nanocyteDeployer = @_createNanocyteDeployer options
       @nanocyteDeployer.deploy (error) =>
@@ -27,6 +28,7 @@ class InstancesController
   destroy: (request, response) =>
     @meshbluHttp = @_createMeshbluHttp request.meshbluAuth
     @meshbluHttp.generateAndStoreToken request.params.flowId, (error, result) =>
+      return response.status(403).send(error.message) if error?
       options = @_buildOptions request, result
       @nanocyteDeployer = @_createNanocyteDeployer options
       @nanocyteDeployer.stopFlow (error) =>
