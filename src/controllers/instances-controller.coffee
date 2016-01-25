@@ -19,11 +19,13 @@ class InstancesController
       return response.status(403).send(error.message) if error?
       options = @_buildOptions request, result
       @nanocyteDeployer = @_createNanocyteDeployer options
-      @nanocyteDeployer.deploy (error) =>
+      @nanocyteDeployer.stopFlow (error) =>
         return response.status(422).send(error.message) if error?
-        @nanocyteDeployer.startFlow (error) =>
+        @nanocyteDeployer.deploy (error) =>
           return response.status(422).send(error.message) if error?
-          response.status(201).location("/flows/#{options.flowUuid}/instances/#{options.instanceId}").end()
+          @nanocyteDeployer.startFlow (error) =>
+            return response.status(422).send(error.message) if error?
+            response.status(201).location("/flows/#{options.flowUuid}/instances/#{options.instanceId}").end()
 
   destroy: (request, response) =>
     @meshbluHttp = @_createMeshbluHttp request.meshbluAuth
