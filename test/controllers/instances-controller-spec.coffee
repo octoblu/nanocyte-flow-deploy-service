@@ -46,6 +46,7 @@ describe '/instances', ->
     describe 'when deploy is successful', ->
       beforeEach ->
         @meshbluHttp.generateAndStoreToken.yield null, token: 'cool-token-bro'
+        @nanocyteDeployer.stopFlow.yield null
         @nanocyteDeployer.deploy.yield null
 
       it 'should call _createMeshbluHttp', ->
@@ -95,6 +96,7 @@ describe '/instances', ->
     describe 'when deploy is failure', ->
       beforeEach ->
         @meshbluHttp.generateAndStoreToken.yield null
+        @nanocyteDeployer.stopFlow.yield null
         @nanocyteDeployer.deploy.yield new Error 'something wrong'
 
       it 'should respond with a 422', ->
@@ -117,6 +119,7 @@ describe '/instances', ->
     describe 'when deploy is successful', ->
       beforeEach ->
         @meshbluHttp.generateAndStoreToken.yield null, token: 'do-you-even-token-bro'
+        @nanocyteDeployer.stopFlow.yield null
         @nanocyteDeployer.deploy.yield null
         @nanocyteDeployer.startFlow.yield null
 
@@ -159,6 +162,7 @@ describe '/instances', ->
     describe 'when deploy is successful', ->
       beforeEach ->
         @meshbluHttp.generateAndStoreToken.yield null, token: 'lame-token-bro'
+        @nanocyteDeployer.stopFlow.yield null
         @nanocyteDeployer.deploy.yield null
         @nanocyteDeployer.startFlow.yield null
 
