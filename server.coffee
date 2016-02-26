@@ -15,9 +15,9 @@ PORT  = process.env.PORT ? 80
 meshbluConfig = new MeshbluConfig
 
 app = express()
+app.use meshbluHealthcheck()
 app.use morgan 'dev'
 app.use errorHandler()
-app.use meshbluHealthcheck()
 app.use meshbluAuth meshbluConfig.toJSON()
 app.use bodyParser.urlencoded limit: '50mb', extended : true
 app.use bodyParser.json limit : '50mb'
@@ -30,3 +30,7 @@ server = app.listen PORT, ->
   port = server.address().port
 
   console.log "Server running on #{host}:#{port}"
+
+process.on 'SIGTERM', =>
+  console.log 'SIGTERM caught, exiting'
+  process.exit 0
