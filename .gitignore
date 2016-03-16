@@ -28,3 +28,6 @@ node_modules
 start-flow.sh
 get-flow.sh
 channels.json
+
+# dev files
+.*-dev
