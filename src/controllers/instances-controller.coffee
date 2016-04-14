@@ -40,7 +40,12 @@ class InstancesController
           response.status(201).end()
 
   _createNanocyteDeployer: (options) =>
-    meshbluConfig = new MeshbluConfig server_env_name: 'MESHBLU_MESSAGES_SERVER'
+    {userUuid, userToken} = options
+    meshbluConfig = new MeshbluConfig
+      uuid: userUuid
+      token: userToken
+      server_env_name: 'MESHBLU_MESSAGES_SERVER'
+
     dependencies =
       configurationGenerator: new ConfigurationGenerator
         registryUrl:     process.env.NODE_REGISTRY_URL
