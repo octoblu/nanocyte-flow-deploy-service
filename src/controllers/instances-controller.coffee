@@ -13,31 +13,31 @@ class InstancesController
     @UUID ?= require 'node-uuid'
     @meshbluConfig = new MeshbluConfig
 
-  create: (request, response) =>
-    @meshbluHttp = @_createMeshbluHttp request.meshbluAuth
-    @meshbluHttp.generateAndStoreToken request.params.flowId, (error, result) =>
-      return response.status(403).send(error.message) if error?
-      options = @_buildOptions request, result
+  create: (req, res) =>
+    @meshbluHttp = @_createMeshbluHttp req.meshbluAuth
+    @meshbluHttp.generateAndStoreToken req.params.flowId, (error, result) =>
+      return res.status(403).send(error.message) if error?
+      options = @_buildOptions req, result
       @nanocyteDeployer = @_createNanocyteDeployer options
       @nanocyteDeployer.stopFlow (error) =>
-        return response.status(422).send(error.message) if error?
+        return res.status(422).send(error.message) if error?
         @nanocyteDeployer.deploy (error) =>
-          return response.status(422).send(error.message) if error?
+          return res.status(422).send(error.message) if error?
           @nanocyteDeployer.startFlow (error) =>
-            return response.status(422).send(error.message) if error?
-            response.status(201).location("/flows/#{options.flowUuid}/instances/#{options.instanceId}").end()
+            return res.status(422).send(error.message) if error?
+            res.status(201).location("/flows/#{options.flowUuid}/instances/#{options.instanceId}").end()
 
-  destroy: (request, response) =>
-    @meshbluHttp = @_createMeshbluHttp request.meshbluAuth
-    @meshbluHttp.generateAndStoreToken request.params.flowId, (error, result) =>
-      return response.status(403).send(error.message) if error?
-      options = @_buildOptions request, result
+  destroy: (req, res) =>
+    @meshbluHttp = @_createMeshbluHttp req.meshbluAuth
+    @meshbluHttp.generateAndStoreToken req.params.flowId, (error, result) =>
+      return res.status(403).send(error.message) if error?
+      options = @_buildOptions req, result
       @nanocyteDeployer = @_createNanocyteDeployer options
       @nanocyteDeployer.stopFlow (error) =>
-        return response.status(422).send(error.message) if error?
+        return res.status(422).send(error.message) if error?
         @nanocyteDeployer.destroy (error) =>
-          return response.status(422).send(error.message) if error?
-          response.status(201).end()
+          return res.status(422).send(error.message) if error?
+          res.status(201).end()
 
   _createNanocyteDeployer: (options) =>
     {userUuid, userToken} = options
@@ -60,17 +60,17 @@ class InstancesController
     meshbluJSON = _.assign {}, @meshbluConfig.toJSON(), options
     new MeshbluHttp meshbluJSON
 
-  _buildOptions: (request, result) =>
+  _buildOptions: (req, result) =>
     instanceId = @UUID.v4()
     return {
-      flowUuid: request.params.flowId
+      flowUuid: req.params.flowId
       instanceId: instanceId
       flowToken: result?.token
-      userUuid: request.meshbluAuth.uuid
-      userToken: request.meshbluAuth.token
-      deploymentUuid: request.get('deploymentUuid') ? 'nanocyte-flow-deploy-default'
+      userUuid: req.meshbluAuth.uuid
+      userToken: req.meshbluAuth.token
+      deploymentUuid: req.get('deploymentUuid') ? 'nanocyte-flow-deploy-default'
       octobluUrl: process.env.OCTOBLU_URL
-      forwardUrl: "#{process.env.NANOCYTE_ENGINE_URL}/flows/#{request.params.flowId}/instances/#{instanceId}/messages"
+      forwardUrl: "#{process.env.NANOCYTE_ENGINE_URL}/flows/#{req.params.flowId}/instances/#{instanceId}/messages"
       flowLoggerUuid:  process.env.FLOW_LOGGER_UUID
     }
 module.exports = InstancesController
