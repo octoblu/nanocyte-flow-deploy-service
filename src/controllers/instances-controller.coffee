@@ -29,7 +29,6 @@ class InstancesController
         async.apply nanocyteDeployer.deploy
         async.apply nanocyteDeployer.startFlow
       ], (error) =>
-        console.error error.stack if error?
         debug benchmark.toString()
         return res.status(422).send(error.message) if error?
         res.status(201).location("/flows/#{options.flowUuid}/instances/#{options.instanceId}").end()
