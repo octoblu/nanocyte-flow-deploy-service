@@ -1,10 +1,13 @@
-_ = require 'lodash'
-redis = require 'redis'
-MeshbluConfig = require 'meshblu-config'
-MeshbluHttp = require 'meshblu-http'
+_                      = require 'lodash'
+async                  = require 'async'
+debug                  = require('debug')('nanocyte-flow-deploy-service:instances-controller')
+redis                  = require 'redis'
+MeshbluConfig          = require 'meshblu-config'
+MeshbluHttp            = require 'meshblu-http'
 ConfigurationGenerator = require 'nanocyte-configuration-generator'
-ConfigurationSaver = require 'nanocyte-configuration-saver-redis'
-client = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD
+ConfigurationSaver     = require 'nanocyte-configuration-saver-redis'
+SimpleBenchmark        = require 'simple-benchmark'
+client                 = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD
 
 class InstancesController
   constructor: (dependencies={}) ->
@@ -14,30 +17,37 @@ class InstancesController
     @meshbluConfig = new MeshbluConfig
 
   create: (req, res) =>
+    benchmark = new SimpleBenchmark label: "create-#{req.params.flowId}"
     @meshbluHttp = @_createMeshbluHttp req.meshbluAuth
     @meshbluHttp.generateAndStoreToken req.params.flowId, (error, result) =>
       return res.status(403).send(error.message) if error?
       options = @_buildOptions req, result
-      @nanocyteDeployer = @_createNanocyteDeployer options
-      @nanocyteDeployer.stopFlow (error) =>
+      nanocyteDeployer = @_createNanocyteDeployer options
+
+      async.series [
+        async.apply nanocyteDeployer.stopFlow
+        async.apply nanocyteDeployer.deploy
+        async.apply nanocyteDeployer.startFlow
+      ], (error) =>
+        console.error error.stack if error?
+        debug benchmark.toString()
         return res.status(422).send(error.message) if error?
-        @nanocyteDeployer.deploy (error) =>
-          return res.status(422).send(error.message) if error?
-          @nanocyteDeployer.startFlow (error) =>
-            return res.status(422).send(error.message) if error?
-            res.status(201).location("/flows/#{options.flowUuid}/instances/#{options.instanceId}").end()
+        res.status(201).location("/flows/#{options.flowUuid}/instances/#{options.instanceId}").end()
 
   destroy: (req, res) =>
+    benchmark = new SimpleBenchmark label: "create-#{req.params.flowId}"
     @meshbluHttp = @_createMeshbluHttp req.meshbluAuth
     @meshbluHttp.generateAndStoreToken req.params.flowId, (error, result) =>
       return res.status(403).send(error.message) if error?
       options = @_buildOptions req, result
-      @nanocyteDeployer = @_createNanocyteDeployer options
-      @nanocyteDeployer.stopFlow (error) =>
+      nanocyteDeployer = @_createNanocyteDeployer options
+      async.series [
+        async.apply nanocyteDeployer.stopFlow
+        async.apply nanocyteDeployer.destroy
+      ], (error) =>
+        debug benchmark.toString()
         return res.status(422).send(error.message) if error?
-        @nanocyteDeployer.destroy (error) =>
-          return res.status(422).send(error.message) if error?
-          res.status(201).end()
+        res.status(201).end()
 
   _createNanocyteDeployer: (options) =>
     {userUuid, userToken} = options
@@ -73,4 +83,5 @@ class InstancesController
       forwardUrl: "#{process.env.NANOCYTE_ENGINE_URL}/flows/#{req.params.flowId}/instances/#{instanceId}/messages"
       flowLoggerUuid:  process.env.FLOW_LOGGER_UUID
     }
+
 module.exports = InstancesController

@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/octoblu/nanocyte-flow-deploy-service#readme",
   "dependencies": {
-    "async": "^1.4.2",
+    "async": "^1.5.2",
     "body-parser": "^1.13.3",
     "coffee-script": "^1.10.0",
     "debug": "^2.2.0",
@@ -39,11 +39,12 @@
     "meshblu-config": "^4.0.0",
     "meshblu-http": "^5.3.1",
     "morgan": "^1.6.1",
-    "nanocyte-configuration-generator": "^4.0.1",
+    "nanocyte-configuration-generator": "^4.1.0",
     "nanocyte-configuration-saver-redis": "^1.6.1",
-    "nanocyte-deployer": "^2.0.3",
+    "nanocyte-deployer": "^2.0.4",
     "node-uuid": "^1.4.3",
-    "redis": "^1.0.0"
+    "redis": "^1.0.0",
+    "simple-benchmark": "^1.0.7"
   },
   "devDependencies": {
     "chai": "^3.3.0",
