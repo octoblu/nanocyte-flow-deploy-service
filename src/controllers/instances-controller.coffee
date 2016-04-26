@@ -25,7 +25,7 @@ class InstancesController
       nanocyteDeployer = @_createNanocyteDeployer options
 
       async.series [
-        async.apply nanocyteDeployer.stopFlow
+        async.apply nanocyteDeployer.sendStopFlowMessage
         async.apply nanocyteDeployer.deploy
         async.apply nanocyteDeployer.startFlow
       ], (error) =>
