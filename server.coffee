@@ -18,8 +18,8 @@ app = express()
 app.use meshbluHealthcheck()
 app.use morgan 'dev'
 app.use errorHandler()
-app.use meshbluAuth.retrieve
-app.use meshbluAuth.gateway
+app.use meshbluAuth.retrieve()
+app.use meshbluAuth.gateway()
 app.use bodyParser.urlencoded limit: '50mb', extended : true
 app.use bodyParser.json limit : '50mb'
 

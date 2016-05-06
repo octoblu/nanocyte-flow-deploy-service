@@ -1,6 +1,6 @@
 {
   "name": "nanocyte-flow-deploy-service",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Flow Deploy Service for Nanocyte",
   "engines": {
     "node": ">=4.0.0"
@@ -32,7 +32,7 @@
     "errorhandler": "^1.4.2",
     "escape-string-regexp": "^1.0.3",
     "express": "^4.13.3",
-    "express-meshblu-auth": "^4.0.2",
+    "express-meshblu-auth": "^5.3.3",
     "express-meshblu-healthcheck": "^1.0.1",
     "lodash": "^3.10.1",
     "lodash-deep": "^1.6.0",
