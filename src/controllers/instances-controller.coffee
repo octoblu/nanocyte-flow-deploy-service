@@ -1,13 +1,13 @@
 _                      = require 'lodash'
 async                  = require 'async'
 debug                  = require('debug')('nanocyte-flow-deploy-service:instances-controller')
-redis                  = require 'redis'
+redis                  = require 'ioredis'
 MeshbluConfig          = require 'meshblu-config'
 MeshbluHttp            = require 'meshblu-http'
 ConfigurationGenerator = require 'nanocyte-configuration-generator'
 ConfigurationSaver     = require 'nanocyte-configuration-saver-redis'
 SimpleBenchmark        = require 'simple-benchmark'
-client                 = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD
+client                 = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD, dropBufferSupport: true
 
 class InstancesController
   constructor: (dependencies={}) ->
@@ -19,7 +19,9 @@ class InstancesController
   create: (req, res) =>
     benchmark = new SimpleBenchmark label: "create-#{req.params.flowId}"
     @meshbluHttp = @_createMeshbluHttp req.meshbluAuth
-    @meshbluHttp.generateAndStoreToken req.params.flowId, (error, result) =>
+    options =
+      tag: 'nanocyte-flow-deploy-service'
+    @meshbluHttp.generateAndStoreTokenWithOptions req.params.flowId, options, (error, result) =>
       return res.status(403).send(error.message) if error?
       options = @_buildOptions req, result
       nanocyteDeployer = @_createNanocyteDeployer options
@@ -36,7 +38,9 @@ class InstancesController
   destroy: (req, res) =>
     benchmark = new SimpleBenchmark label: "create-#{req.params.flowId}"
     @meshbluHttp = @_createMeshbluHttp req.meshbluAuth
-    @meshbluHttp.generateAndStoreToken req.params.flowId, (error, result) =>
+    options =
+      tag: 'nanocyte-flow-deploy-service'
+    @meshbluHttp.generateAndStoreTokenWithOptions req.params.flowId, options, (error, result) =>
       return res.status(403).send(error.message) if error?
       options = @_buildOptions req, result
       nanocyteDeployer = @_createNanocyteDeployer options

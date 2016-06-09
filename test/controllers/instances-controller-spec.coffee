@@ -23,7 +23,7 @@ describe '/instances', ->
       sendStopFlowMessage: sinon.stub()
 
     @meshbluHttp =
-      generateAndStoreToken: sinon.stub()
+      generateAndStoreTokenWithOptions: sinon.stub()
 
     @sut = new InstancesController UUID: @UUID
     @_createNanocyteDeployer = sinon.stub @sut, '_createNanocyteDeployer'
@@ -46,15 +46,15 @@ describe '/instances', ->
 
     describe 'when deploy is successful', ->
       beforeEach ->
-        @meshbluHttp.generateAndStoreToken.yield null, token: 'cool-token-bro'
+        @meshbluHttp.generateAndStoreTokenWithOptions.yield null, token: 'cool-token-bro'
         @nanocyteDeployer.sendStopFlowMessage.yield null
         @nanocyteDeployer.deploy.yield null
 
       it 'should call _createMeshbluHttp', ->
         expect(@_createMeshbluHttp).to.have.been.calledWith uuid: 'the-user-uuid', token: 'the-user-token'
 
-      it 'should call generateAndStoreToken', ->
-        expect(@meshbluHttp.generateAndStoreToken).to.have.been.calledWith 'some-flow-uuid'
+      it 'should call generateAndStoreTokenWithOptions', ->
+        expect(@meshbluHttp.generateAndStoreTokenWithOptions).to.have.been.calledWith 'some-flow-uuid'
 
       it 'should call deploy on the nanocyte deployer', ->
         expect(@nanocyteDeployer.deploy).to.have.been.called
@@ -96,7 +96,7 @@ describe '/instances', ->
 
     describe 'when deploy is failure', ->
       beforeEach ->
-        @meshbluHttp.generateAndStoreToken.yield null
+        @meshbluHttp.generateAndStoreTokenWithOptions.yield null
         @nanocyteDeployer.sendStopFlowMessage.yield null
         @nanocyteDeployer.deploy.yield new Error 'something wrong'
 
@@ -119,13 +119,13 @@ describe '/instances', ->
 
     describe 'when deploy is successful', ->
       beforeEach ->
-        @meshbluHttp.generateAndStoreToken.yield null, token: 'do-you-even-token-bro'
+        @meshbluHttp.generateAndStoreTokenWithOptions.yield null, token: 'do-you-even-token-bro'
         @nanocyteDeployer.sendStopFlowMessage.yield null
         @nanocyteDeployer.deploy.yield null
         @nanocyteDeployer.startFlow.yield null
 
-      it 'should call generateAndStoreToken', ->
-        expect(@meshbluHttp.generateAndStoreToken).to.have.been.calledWith 'some-other-flow-uuid'
+      it 'should call generateAndStoreTokenWithOptions', ->
+        expect(@meshbluHttp.generateAndStoreTokenWithOptions).to.have.been.calledWith 'some-other-flow-uuid'
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
@@ -162,7 +162,7 @@ describe '/instances', ->
 
     describe 'when deploy is successful', ->
       beforeEach ->
-        @meshbluHttp.generateAndStoreToken.yield null, token: 'lame-token-bro'
+        @meshbluHttp.generateAndStoreTokenWithOptions.yield null, token: 'lame-token-bro'
         @nanocyteDeployer.sendStopFlowMessage.yield null
         @nanocyteDeployer.deploy.yield null
         @nanocyteDeployer.startFlow.yield null
@@ -202,11 +202,11 @@ describe '/instances', ->
 
     describe 'when stopFlow is successful', ->
       beforeEach ->
-        @meshbluHttp.generateAndStoreToken.yield null, token: 'cool-token-bro'
+        @meshbluHttp.generateAndStoreTokenWithOptions.yield null, token: 'cool-token-bro'
         @nanocyteDeployer.stopFlow.yield null
 
-      it 'should call generateAndStoreToken', ->
-        expect(@meshbluHttp.generateAndStoreToken).to.have.been.calledWith 'some-flow-uuid'
+      it 'should call generateAndStoreTokenWithOptions', ->
+        expect(@meshbluHttp.generateAndStoreTokenWithOptions).to.have.been.calledWith 'some-flow-uuid'
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
@@ -247,11 +247,11 @@ describe '/instances', ->
 
     describe 'when stopFlow is failure', ->
       beforeEach ->
-        @meshbluHttp.generateAndStoreToken.yield null, token: 'cool-token-bro'
+        @meshbluHttp.generateAndStoreTokenWithOptions.yield null, token: 'cool-token-bro'
         @nanocyteDeployer.stopFlow.yield new Error "Oh no!"
 
-      it 'should call generateAndStoreToken', ->
-        expect(@meshbluHttp.generateAndStoreToken).to.have.been.calledWith 'some-flow-uuid'
+      it 'should call generateAndStoreTokenWithOptions', ->
+        expect(@meshbluHttp.generateAndStoreTokenWithOptions).to.have.been.calledWith 'some-flow-uuid'
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
