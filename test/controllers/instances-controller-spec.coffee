@@ -230,8 +230,8 @@ describe '/instances', ->
         it 'should call nanocyteDeployer.destroy', ->
           expect(@nanocyteDeployer.destroy).to.have.been.called
 
-        it 'should respond with a 201', ->
-          expect(@response.status).to.have.been.calledWith 201
+        it 'should respond with a 204', ->
+          expect(@response.status).to.have.been.calledWith 204
           expect(@response.end).to.have.been.called
 
       describe 'and nanocyteDeployer.destroy is a failure', ->
