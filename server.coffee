@@ -8,8 +8,10 @@ meshbluHealthcheck  = require 'express-meshblu-healthcheck'
 debug               = require('debug')('nanocyte-flow-deploy-service')
 expressVersion      = require 'express-package-version'
 InstancesController = require './src/controllers/instances-controller'
+IotAppController    = require './src/controllers/iot-app-controller'
 
 instancesController = new InstancesController
+iotAppController    = new IotAppController
 
 PORT  = process.env.PORT ? 80
 
@@ -24,9 +26,9 @@ app.use meshbluAuth.retrieve()
 app.use meshbluAuth.gateway()
 app.use bodyParser.urlencoded limit: '50mb', extended : true
 app.use bodyParser.json limit : '50mb'
-
-app.post '/flows/:flowId/instances', instancesController.create
-app.delete '/flows/:flowId/instances', instancesController.destroy
+app.post '/iot-app/link/:appId/:version', iotAppController.link
+app.post '/flows/:flowId/instances',      instancesController.create
+app.delete '/flows/:flowId/instances',    instancesController.destroy
 
 server = app.listen PORT, ->
   host = server.address().address
