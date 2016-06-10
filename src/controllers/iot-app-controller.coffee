@@ -16,7 +16,6 @@ class IotAppController
     config           = req.body
     flowId           = req.meshbluAuth.uuid
     @meshbluHttp     = @_createMeshbluHttp req.meshbluAuth
-    console.log JSON.stringify config, null, 2
 
     {instanceId} = config
     configSchema = config.schemas?.configure?.iotApp
