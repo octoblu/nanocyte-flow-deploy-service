@@ -4,8 +4,8 @@ debug                  = require('debug')('nanocyte-flow-deploy-service:iot-app-
 redis                  = require 'ioredis'
 MeshbluConfig          = require 'meshblu-config'
 MeshbluHttp            = require 'meshblu-http'
+ConfigurationSaver     = require 'nanocyte-configuration-saver-redis'
 client                 = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD, dropBufferSupport: true
-
 class IotAppController
   constructor: (dependencies={}) ->
     {@NanocyteDeployer, @UUID} = dependencies
@@ -19,9 +19,7 @@ class IotAppController
     console.log JSON.stringify config, null, 2
 
     {instanceId} = config
-    console.log 'instanceId', instanceId
     configSchema = config.schemas?.configure?.iotApp
-    console.log 'configSchema', JSON.stringify configSchema 
     return res.sendStatus(422) unless configSchema? and instanceId?
     @meshbluHttp.device appId, (error) =>
       return res.sendStatus(403) if error?
