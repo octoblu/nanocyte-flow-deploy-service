@@ -26,7 +26,7 @@ app.use meshbluAuth.retrieve()
 app.use meshbluAuth.gateway()
 app.use bodyParser.urlencoded limit: '50mb', extended : true
 app.use bodyParser.json limit : '50mb'
-app.post '/iot-app/link/:appId/:version', iotAppController.link
+app.post '/bluprint/link/:appId/:version', iotAppController.link
 app.post '/flows/:flowId/instances',      instancesController.create
 app.delete '/flows/:flowId/instances',    instancesController.destroy
 

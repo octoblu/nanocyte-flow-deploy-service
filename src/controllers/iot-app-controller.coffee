@@ -23,7 +23,7 @@ class IotAppController
     @meshbluHttp.device appId, (error) =>
       return res.sendStatus(403) if error?
       configurationSaver = new ConfigurationSaver client
-      configurationSaver.saveIotApp {flowId, instanceId, appId, version, configSchema, config}, (error) =>
+      configurationSaver.linkToBluprint {flowId, instanceId, appId, version, configSchema, config}, (error) =>
         return res.status(error.code || 500).send({error}) if error?
         res.sendStatus 201
 
