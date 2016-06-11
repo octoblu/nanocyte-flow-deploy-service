@@ -18,7 +18,7 @@ class IotAppController
     @meshbluHttp     = @_createMeshbluHttp req.meshbluAuth
 
     {instanceId} = config
-    configSchema = config.schemas?.configure?.iotApp
+    configSchema = config.schemas?.configure?.bluprint
     return res.sendStatus(422) unless configSchema? and instanceId?
     @meshbluHttp.device appId, (error) =>
       return res.sendStatus(403) if error?
