@@ -1,14 +1,14 @@
-_                      = require 'lodash'
-async                  = require 'async'
-debug                  = require('debug')('nanocyte-flow-deploy-service:instances-controller')
-redis                  = require 'ioredis'
-MeshbluConfig          = require 'meshblu-config'
-MeshbluHttp            = require 'meshblu-http'
-mongojs                = require 'mongojs'
-Datastore              = require 'meshblu-core-datastore'
-ConfigurationGenerator = require 'nanocyte-configuration-generator'
-ConfigurationSaver     = require 'nanocyte-configuration-saver-redis'
-SimpleBenchmark        = require 'simple-benchmark'
+_                       = require 'lodash'
+async                   = require 'async'
+debug                   = require('debug')('nanocyte-flow-deploy-service:instances-controller')
+redis                   = require 'ioredis'
+MeshbluConfig           = require 'meshblu-config'
+MeshbluHttp             = require 'meshblu-http'
+mongojs                 = require 'mongojs'
+Datastore               = require 'meshblu-core-datastore'
+ConfigurationGenerator  = require 'nanocyte-configuration-generator'
+ConfigurationSaverMongo = require 'nanocyte-configuration-saver-mongo'
+SimpleBenchmark         = require 'simple-benchmark'
 
 class InstancesController
   constructor: (dependencies={}) ->
@@ -29,7 +29,7 @@ class InstancesController
     options =
       tag: 'nanocyte-flow-deploy-service'
     @meshbluHttp.generateAndStoreTokenWithOptions req.params.flowId, options, (error, result) =>
-      return res.status(403).send(error.message) if error?
+      return res.status(error.code ? 403).send(error.message) if error?
       options = @_buildOptions req, result
       nanocyteDeployer = @_createNanocyteDeployer options
 
@@ -48,7 +48,7 @@ class InstancesController
     options =
       tag: 'nanocyte-flow-deploy-service'
     @meshbluHttp.generateAndStoreTokenWithOptions req.params.flowId, options, (error, result) =>
-      return res.status(403).send(error.message) if error?
+      return res.status(error.code ? 403).send(error.message) if error?
       options = @_buildOptions req, result
       nanocyteDeployer = @_createNanocyteDeployer options
       async.series [
@@ -72,7 +72,7 @@ class InstancesController
         meshbluJSON:     meshbluConfig.toJSON()
         accessKeyId:     process.env.AWS_ACCESS_KEY_ID
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-      configurationSaver: new ConfigurationSaver {@client, @datastore}
+      configurationSaver: new ConfigurationSaverMongo {@datastore}
 
     new @NanocyteDeployer options, dependencies
 
@@ -83,6 +83,7 @@ class InstancesController
   _buildOptions: (req, result) =>
     instanceId = @UUID.v4()
     return {
+      client: @client
       flowUuid: req.params.flowId
       instanceId: instanceId
       flowToken: result?.token
