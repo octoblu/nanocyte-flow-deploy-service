@@ -25,7 +25,8 @@ describe '/instances', ->
     @meshbluHttp =
       generateAndStoreTokenWithOptions: sinon.stub()
 
-    @sut = new InstancesController UUID: @UUID
+    MONGODB_URI = 'localhost'
+    @sut = new InstancesController {@UUID, MONGODB_URI}
     @_createNanocyteDeployer = sinon.stub @sut, '_createNanocyteDeployer'
     @_createNanocyteDeployer.returns @nanocyteDeployer
     @_createMeshbluHttp = sinon.stub @sut, '_createMeshbluHttp'

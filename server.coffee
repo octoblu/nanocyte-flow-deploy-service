@@ -5,12 +5,16 @@ errorHandler        = require 'errorhandler'
 MeshbluConfig       = require 'meshblu-config'
 MeshbluAuth         = require 'express-meshblu-auth'
 meshbluHealthcheck  = require 'express-meshblu-healthcheck'
-debug               = require('debug')('nanocyte-flow-deploy-service')
 expressVersion      = require 'express-package-version'
 InstancesController = require './src/controllers/instances-controller'
 IotAppController    = require './src/controllers/iot-app-controller'
+debug               = require('debug')('nanocyte-flow-deploy-service')
 
-instancesController = new InstancesController
+MONGODB_URI = process.env.MONGODB_URI
+
+throw new Error 'MONGODB_URI is required' unless MONGODB_URI?
+
+instancesController = new InstancesController {MONGODB_URI}
 iotAppController    = new IotAppController
 
 PORT  = process.env.PORT ? 80

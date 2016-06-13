@@ -4,17 +4,24 @@ debug                  = require('debug')('nanocyte-flow-deploy-service:instance
 redis                  = require 'ioredis'
 MeshbluConfig          = require 'meshblu-config'
 MeshbluHttp            = require 'meshblu-http'
+mongojs                = require 'mongojs'
+Datastore              = require 'meshblu-core-datastore'
 ConfigurationGenerator = require 'nanocyte-configuration-generator'
 ConfigurationSaver     = require 'nanocyte-configuration-saver-redis'
 SimpleBenchmark        = require 'simple-benchmark'
-client                 = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD, dropBufferSupport: true
 
 class InstancesController
   constructor: (dependencies={}) ->
-    {@NanocyteDeployer, @UUID} = dependencies
+    {@NanocyteDeployer, @UUID, MONGODB_URI} = dependencies
+    throw new Error 'InstancesController requires MONGODB_URI' unless MONGODB_URI?
     @NanocyteDeployer ?= require 'nanocyte-deployer'
     @UUID ?= require 'node-uuid'
     @meshbluConfig = new MeshbluConfig
+    @client = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD, dropBufferSupport: true
+    database = mongojs MONGODB_URI
+    @datastore = new Datastore
+      database: database
+      collection: 'instances'
 
   create: (req, res) =>
     benchmark = new SimpleBenchmark label: "create-#{req.params.flowId}"
@@ -65,7 +72,7 @@ class InstancesController
         meshbluJSON:     meshbluConfig.toJSON()
         accessKeyId:     process.env.AWS_ACCESS_KEY_ID
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-      configurationSaver: new ConfigurationSaver client
+      configurationSaver: new ConfigurationSaver {@client, @datastore}
 
     new @NanocyteDeployer options, dependencies
 
