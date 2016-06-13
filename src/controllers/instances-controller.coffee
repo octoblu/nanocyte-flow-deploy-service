@@ -12,12 +12,13 @@ SimpleBenchmark         = require 'simple-benchmark'
 
 class InstancesController
   constructor: (dependencies={}) ->
-    {@NanocyteDeployer, @UUID, MONGODB_URI} = dependencies
+    {@NanocyteDeployer, @UUID, MONGODB_URI, REDIS_URI} = dependencies
     throw new Error 'InstancesController requires MONGODB_URI' unless MONGODB_URI?
+    throw new Error 'InstancesController requires REDIS_URI' unless REDIS_URI?
     @NanocyteDeployer ?= require 'nanocyte-deployer'
     @UUID ?= require 'node-uuid'
     @meshbluConfig = new MeshbluConfig
-    @client = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD, dropBufferSupport: true
+    @client = redis.createClient process.env.REDIS_URI, dropBufferSupport: true
     database = mongojs MONGODB_URI
     @datastore = new Datastore
       database: database

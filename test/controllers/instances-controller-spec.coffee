@@ -26,7 +26,8 @@ describe '/instances', ->
       generateAndStoreTokenWithOptions: sinon.stub()
 
     MONGODB_URI = 'localhost'
-    @sut = new InstancesController {@UUID, MONGODB_URI}
+    REDIS_URI = 'localhost'
+    @sut = new InstancesController {@UUID, MONGODB_URI, REDIS_URI}
     @_createNanocyteDeployer = sinon.stub @sut, '_createNanocyteDeployer'
     @_createNanocyteDeployer.returns @nanocyteDeployer
     @_createMeshbluHttp = sinon.stub @sut, '_createMeshbluHttp'
@@ -62,6 +63,7 @@ describe '/instances', ->
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
+          client: @sut.client
           deploymentUuid: 'the-deployment-uuid'
           flowUuid: 'some-flow-uuid'
           instanceId: 'an-instance-uuid'
@@ -130,6 +132,7 @@ describe '/instances', ->
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
+          client: @sut.client
           deploymentUuid: 'some-other-deployment-uuid'
           flowUuid: 'some-other-flow-uuid'
           instanceId: 'an-instance-uuid'
@@ -170,6 +173,7 @@ describe '/instances', ->
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
+          client: @sut.client
           deploymentUuid: 'this-deployment-uuid'
           flowUuid: 'some-other-new-flow-uuid'
           instanceId: 'a-new-instance-uuid'
@@ -211,6 +215,7 @@ describe '/instances', ->
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
+          client: @sut.client
           flowUuid: 'some-flow-uuid'
           instanceId: 'an-instance-uuid'
           flowToken: 'cool-token-bro'
@@ -256,6 +261,7 @@ describe '/instances', ->
 
       it 'should call _createNanocyteDeployer', ->
         expect(@_createNanocyteDeployer).to.have.been.calledWith
+          client: @sut.client
           deploymentUuid: 'this-deployment-uuid'
           flowUuid: 'some-flow-uuid'
           instanceId: 'an-instance-uuid'

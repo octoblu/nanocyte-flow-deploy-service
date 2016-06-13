@@ -5,7 +5,7 @@ redis                  = require 'ioredis'
 MeshbluConfig          = require 'meshblu-config'
 MeshbluHttp            = require 'meshblu-http'
 ConfigurationSaver     = require 'nanocyte-configuration-saver-redis'
-client                 = redis.createClient process.env.REDIS_PORT, process.env.REDIS_HOST, auth_pass: process.env.REDIS_PASSWORD, dropBufferSupport: true
+client                 = redis.createClient process.env.REDIS_URI, dropBufferSupport: true
 
 class IotAppController
   constructor: (dependencies={}) ->

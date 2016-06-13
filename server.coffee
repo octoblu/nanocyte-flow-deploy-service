@@ -11,10 +11,12 @@ IotAppController    = require './src/controllers/iot-app-controller'
 debug               = require('debug')('nanocyte-flow-deploy-service')
 
 MONGODB_URI = process.env.MONGODB_URI
+REDIS_URI = process.env.REDIS_URI
 
 throw new Error 'MONGODB_URI is required' unless MONGODB_URI?
+throw new Error 'REDIS_URI is required' unless REDIS_URI?
 
-instancesController = new InstancesController {MONGODB_URI}
+instancesController = new InstancesController {MONGODB_URI, REDIS_URI}
 iotAppController    = new IotAppController
 
 PORT  = process.env.PORT ? 80
