@@ -17,7 +17,7 @@ throw new Error 'MONGODB_URI is required' unless MONGODB_URI?
 throw new Error 'REDIS_URI is required' unless REDIS_URI?
 
 instancesController = new InstancesController {MONGODB_URI, REDIS_URI}
-iotAppController    = new IotAppController
+iotAppController    = new IotAppController {MONGODB_URI, REDIS_URI}
 
 PORT  = process.env.PORT ? 80
 
@@ -32,7 +32,11 @@ app.use meshbluAuth.retrieve()
 app.use meshbluAuth.gateway()
 app.use bodyParser.urlencoded limit: '50mb', extended : true
 app.use bodyParser.json limit : '50mb'
-app.post '/bluprint/link/:appId/:version', iotAppController.link
+
+app.post '/bluprint/:appId/:version',      iotAppController.publish
+app.post '/bluprint/:appId/:version/link', iotAppController.link
+
+
 app.post '/flows/:flowId/instances',      instancesController.create
 app.delete '/flows/:flowId/instances',    instancesController.destroy
 
