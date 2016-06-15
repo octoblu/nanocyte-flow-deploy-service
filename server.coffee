@@ -9,6 +9,7 @@ expressVersion      = require 'express-package-version'
 InstancesController = require './src/controllers/instances-controller'
 IotAppController    = require './src/controllers/iot-app-controller'
 debug               = require('debug')('nanocyte-flow-deploy-service')
+cors                = require 'cors'
 
 MONGODB_URI = process.env.MONGODB_URI
 REDIS_URI = process.env.REDIS_URI
@@ -24,6 +25,7 @@ PORT  = process.env.PORT ? 80
 meshbluConfig = new MeshbluConfig
 meshbluAuth = new MeshbluAuth meshbluConfig.toJSON()
 app = express()
+app.use cors()
 app.use meshbluHealthcheck()
 app.use expressVersion({format: '{"version": "%s"}'})
 app.use morgan 'dev'
