@@ -28,22 +28,21 @@ class IotAppController
     {appId, version} = req.params
     config           = req.body
     flowId           = req.meshbluAuth.uuid
-    meshbluHttp     = @_createMeshbluHttp req.meshbluAuth
+    meshbluHttp      = @_createMeshbluHttp req.meshbluAuth
 
     {instanceId} = config
     configSchema = config.schemas?.configure?.bluprint
     return res.sendStatus(422) unless configSchema? and instanceId?
-    meshbluHttp.device appId, (error) =>
-      return res.sendStatus(403) if error?
-      configurationSaver = new ConfigurationSaver {@client}
-      configurationSaver.linkToBluprint {flowId, instanceId, appId, version, configSchema, config}, (error) =>
-        return res.status(error.code || 500).send({error}) if error?
-        res.sendStatus 201
+
+    configurationSaver = new ConfigurationSaver {@client}
+    configurationSaver.linkToBluprint {flowId, instanceId, appId, version, configSchema, config}, (error) =>
+      return res.status(error.code || 500).send({error}) if error?
+      res.sendStatus 201
 
   publish: (req, res) =>
     {appId, version}  = req.params
     meshbluHttp       = @_createMeshbluHttp req.meshbluAuth
-    
+
     meshbluHttp.generateAndStoreTokenWithOptions appId, {tag: 'nanocyte-flow-deploy-service'}, (error, {token}={}) =>
       return res.status(error.code ? 403).send(error.message) if error?
 
