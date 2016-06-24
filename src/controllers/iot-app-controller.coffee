@@ -35,7 +35,20 @@ class IotAppController
     return res.sendStatus(422) unless configSchema? and instanceId?
 
     configurationSaver = new ConfigurationSaver {@client}
-    configurationSaver.linkToBluprint {flowId, instanceId, appId, version, configSchema, config}, (error) =>
+
+    stopMessage =
+      devices: [flowId]
+      metadata: to: nodeId: 'engine-stop'
+
+    startMessage =
+      devices: [flowId]
+      metadata: to: nodeId: 'engine-start'
+
+    async.series [
+      async.apply configurationSaver.linkToBluprint, {flowId, instanceId, appId, version, configSchema, config}
+      async.apply meshbluHttp.message, stopMessage
+      async.apply meshbluHttp.message, startMessage
+    ], (error) =>
       return res.status(error.code || 500).send({error}) if error?
       res.sendStatus 201
 
@@ -63,7 +76,6 @@ class IotAppController
     configurationGenerator = new ConfigurationGenerator {meshbluJSON}
 
     new IotAppPublisher options, {configurationSaver, configurationGenerator}
-
 
   _createMeshbluHttp: (options) =>
     meshbluJSON = _.assign {}, @meshbluConfig.toJSON(), options
