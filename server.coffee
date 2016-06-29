@@ -36,7 +36,6 @@ app.use bodyParser.urlencoded limit: '50mb', extended : true
 app.use bodyParser.json limit : '50mb'
 
 app.post '/bluprint/:appId/:version',      iotAppController.publish
-app.put  '/bluprint/:appId/:version',      iotAppController.publish
 app.post '/bluprint/:appId/:version/link', iotAppController.link
 
 
