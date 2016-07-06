@@ -54,14 +54,19 @@ class IotAppController
 
   publish: (req, res) =>
     {appId, version}  = req.params
+    {flowId} = req.body
+    debug("Publishing for AppId #{appId} Version: #{version}")
+    debug("Generating new token for Flow", flowId)
     meshbluHttp       = @_createMeshbluHttp req.meshbluAuth
 
     meshbluHttp.generateAndStoreTokenWithOptions appId, {tag: 'nanocyte-flow-deploy-service'}, (error, {token}={}) =>
+      debug("Error on generate and store token", error) if error?
       return res.status(error.code ? 403).send(error.message) if error?
 
-      options         = appId: appId, appToken: token, version: version
+      options         = appId: appId, flowId: flowId, appToken: token, version: version
       iotAppPublisher = @_createIotAppPublisher options
       iotAppPublisher.publish (error) =>
+        debug("Published the IoTApp and we got an error", error) if error
         return res.status(error.code ? 422).send(error.message) if error?
         res.sendStatus(201)
 
