@@ -59,20 +59,21 @@ class IotAppController
     debug("Generating new token for Flow", flowId)
     meshbluHttp       = @_createMeshbluHttp req.meshbluAuth
 
-    meshbluHttp.generateAndStoreTokenWithOptions appId, {tag: 'nanocyte-flow-deploy-service'}, (error, {token}={}) =>
-      debug("Error on generate and store token", error) if error?
-      return res.status(error.code ? 403).send(error.message) if error?
+    meshbluHttp.generateAndStoreTokenWithOptions appId, {tag: 'nanocyte-flow-deploy-service'}, (error, appDevice={}) =>
+      meshbluHttp.generateAndStoreTokenWithOptions flowId, {tag: 'nanocyte-flow-deploy-service'}, (error, flowDevice={}) =>
+        debug("Error on generate and store token", error) if error?
+        return res.status(error.code ? 403).send(error.message) if error?
 
-      options         = appId: appId, flowId: flowId, appToken: token, version: version
-      iotAppPublisher = @_createIotAppPublisher options
-      iotAppPublisher.publish (error) =>
-        debug("Published the IoTApp and we got an error", error) if error
-        return res.status(error.code ? 422).send(error.message) if error?
-        res.sendStatus(201)
+        options         = appId: appId, flowId: flowId, appToken: appDevice.token, flowToken: flowDevice.token,  version: version
+        iotAppPublisher = @_createIotAppPublisher options
+        iotAppPublisher.publish (error) =>
+          debug("Published the IoTApp and we got an error", error) if error?
+          return res.status(error.code ? 422).send(error.message) if error?
+          res.sendStatus(201)
 
 
   _createIotAppPublisher: (options) =>
-    {appId, appToken} = options
+    { appId, appToken } = options
 
     meshbluJSON =
       _.extend new MeshbluConfig().toJSON(), {uuid:  appId, token: appToken}

@@ -1,6 +1,6 @@
 {
   "name": "nanocyte-flow-deploy-service",
-  "version": "5.4.1",
+  "version": "5.4.2",
   "description": "Flow Deploy Service for Nanocyte",
   "engines": {
     "node": ">=4.0.0"
@@ -38,7 +38,7 @@
     "express-package-version": "0.0.2",
     "ioredis": "^2.0.1",
     "lodash": "^4.13.1",
-    "meshblu-config": "^4.0.0",
+    "meshblu-config": "^4.1.0",
     "meshblu-core-datastore": "^4.6.0",
     "meshblu-http": "^5.3.1",
     "mongojs": "^2.4.0",
@@ -47,7 +47,7 @@
     "nanocyte-configuration-saver-mongo": "^1.1.0",
     "nanocyte-configuration-saver-redis": "^3.3.0",
     "nanocyte-deployer": "^4.1.0",
-    "nanocyte-iot-app-publisher": "^1.0.9",
+    "nanocyte-iot-app-publisher": "^4.0.0",
     "node-uuid": "^1.4.3",
     "simple-benchmark": "^1.0.7"
   },
