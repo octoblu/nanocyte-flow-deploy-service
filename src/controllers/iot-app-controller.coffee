@@ -18,11 +18,16 @@ class IotAppController
     @meshbluConfig             = new MeshbluConfig
     @client                    = redis.createClient REDIS_URI, dropBufferSupport: true
     database                   = mongojs MONGODB_URI
-
     @datastore = new Datastore
       database: database
       collection: 'iot-apps'
 
+    setInterval =>
+      database.runCommand {ping: 1}, (error) =>
+        if error?
+          console.error 'MongoDB connection failed, exiting.'
+          process.exit 1
+    , 10 * 1000
 
   link: (req, res) =>
     {appId, version} = req.params
