@@ -24,6 +24,13 @@ class InstancesController
       database: database
       collection: 'instances'
 
+    setInterval =>
+      database.runCommand {ping: 1}, (error) =>
+        if error?
+          console.error 'MongoDB connection failed, exiting.'
+          process.exit 1
+    , 10 * 1000
+
   create: (req, res) =>
     benchmark = new SimpleBenchmark label: "create-#{req.params.flowId}"
     @meshbluHttp = @_createMeshbluHttp req.meshbluAuth
