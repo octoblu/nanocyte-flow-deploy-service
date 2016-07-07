@@ -46,7 +46,7 @@
     "nanocyte-configuration-generator": "^5.0.0",
     "nanocyte-configuration-saver-mongo": "^1.1.0",
     "nanocyte-configuration-saver-redis": "^3.3.0",
-    "nanocyte-deployer": "^4.1.0",
+    "nanocyte-deployer": "^4.2.2",
     "nanocyte-iot-app-publisher": "^4.0.0",
     "node-uuid": "^1.4.3",
     "simple-benchmark": "^1.0.7"

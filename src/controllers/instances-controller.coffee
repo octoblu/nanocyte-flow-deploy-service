@@ -27,8 +27,8 @@ class InstancesController
   create: (req, res) =>
     benchmark = new SimpleBenchmark label: "create-#{req.params.flowId}"
     @meshbluHttp = @_createMeshbluHttp req.meshbluAuth
-    options =
-      tag: 'nanocyte-flow-deploy-service'
+    options = tag: 'nanocyte-flow-deploy-service'
+
     @meshbluHttp.generateAndStoreTokenWithOptions req.params.flowId, options, (error, result) =>
       return res.status(error.code ? 403).send(error.message) if error?
       options = @_buildOptions req, result
