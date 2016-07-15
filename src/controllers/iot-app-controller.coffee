@@ -14,10 +14,10 @@ IotAppPublisher        = require 'nanocyte-iot-app-publisher'
 
 class IotAppController
   constructor: (dependencies={}) ->
-    {@NanocyteDeployer, @UUID, MONGODB_URI, REDIS_URI} = dependencies
+    {@NanocyteDeployer, @UUID, mongoDbUri, redisUri} = dependencies
     @meshbluConfig             = new MeshbluConfig
-    @client                    = redis.createClient REDIS_URI, dropBufferSupport: true
-    database                   = mongojs MONGODB_URI
+    @client                    = redis.createClient redisUri, dropBufferSupport: true
+    database                   = mongojs mongoDbUri
     @datastore = new Datastore
       database: database
       collection: 'iot-apps'
@@ -60,7 +60,7 @@ class IotAppController
   publish: (req, res) =>
     {appId, version}  = req.params
     {flowId} = req.body
-    
+
     debug("Publishing for AppId #{appId} Version: #{version}")
     meshbluHttp       = @_createMeshbluHttp req.meshbluAuth
 

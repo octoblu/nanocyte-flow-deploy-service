@@ -12,14 +12,28 @@ SimpleBenchmark         = require 'simple-benchmark'
 
 class InstancesController
   constructor: (dependencies={}) ->
-    {@NanocyteDeployer, @UUID, MONGODB_URI, REDIS_URI} = dependencies
-    throw new Error 'InstancesController requires MONGODB_URI' unless MONGODB_URI?
-    throw new Error 'InstancesController requires REDIS_URI' unless REDIS_URI?
+    {
+      @NanocyteDeployer
+      @UUID
+      @mongoDbUri
+      @redisUri
+      @intervalServiceUri
+      @octobluUrl
+      @nanocyteEngineUrl
+      @nodeRegistryUrl
+      @flowLoggerUuid
+    } = dependencies
+    throw new Error 'InstancesController requires mongoDbUri' unless @mongoDbUri?
+    throw new Error 'InstancesController requires redisUri' unless @redisUri?
+    throw new Error 'InstancesController requires intervalServiceUri' unless @intervalServiceUri?
+    throw new Error 'InstancesController requires nanocyteEngineUrl' unless @nanocyteEngineUrl?
+    throw new Error 'InstancesController requires octobluUrl' unless @octobluUrl?
+    throw new Error 'InstancesController requires nodeRegistryUrl' unless @nodeRegistryUrl?
     @NanocyteDeployer ?= require 'nanocyte-deployer'
     @UUID ?= require 'node-uuid'
     @meshbluConfig = new MeshbluConfig
-    @client = redis.createClient process.env.REDIS_URI, dropBufferSupport: true
-    database = mongojs MONGODB_URI
+    @client = redis.createClient @redisUri, dropBufferSupport: true
+    database = mongojs @mongoDbUri
     @datastore = new Datastore
       database: database
       collection: 'instances'
@@ -76,10 +90,10 @@ class InstancesController
 
     dependencies =
       configurationGenerator: new ConfigurationGenerator
-        registryUrl:     process.env.NODE_REGISTRY_URL
+        registryUrl:     @nodeRegistryUrl
         meshbluJSON:     meshbluConfig.toJSON()
-        accessKeyId:     process.env.AWS_ACCESS_KEY_ID
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        accessKeyId:     @awsAccessKeyId
+        secretAccessKey: @awsSecretAccessKey
       configurationSaver: new ConfigurationSaverMongo {@datastore}
 
     new @NanocyteDeployer options, dependencies
@@ -98,9 +112,10 @@ class InstancesController
       userUuid: req.meshbluAuth.uuid
       userToken: req.meshbluAuth.token
       deploymentUuid: req.get('deploymentUuid') ? 'nanocyte-flow-deploy-default'
-      octobluUrl: process.env.OCTOBLU_URL
-      forwardUrl: "#{process.env.NANOCYTE_ENGINE_URL}/flows/#{req.params.flowId}/instances/#{instanceId}/messages"
-      flowLoggerUuid:  process.env.FLOW_LOGGER_UUID
+      octobluUrl: @octobluUrl
+      forwardUrl: "#{@nanocyteEngineUrl}/flows/#{req.params.flowId}/instances/#{instanceId}/messages"
+      flowLoggerUuid:  @flowLoggerUuid
+      intervalServiceUri: @intervalServiceUri
     }
 
 module.exports = InstancesController

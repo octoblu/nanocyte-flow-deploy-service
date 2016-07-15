@@ -3,9 +3,6 @@ NanocyteDeployer = require 'nanocyte-deployer'
 
 describe '/instances', ->
   beforeEach ->
-    process.env['OCTOBLU_URL'] = 'http://yahho.com'
-    process.env['FLOW_LOGGER_UUID'] = 'flow-logger-uuid'
-    process.env['NANOCYTE_ENGINE_URL'] = 'https://genisys.com'
     @response =
       location: sinon.spy => @response
       status: sinon.spy => @response
@@ -25,9 +22,17 @@ describe '/instances', ->
     @meshbluHttp =
       generateAndStoreTokenWithOptions: sinon.stub()
 
-    MONGODB_URI = 'localhost'
-    REDIS_URI = 'localhost'
-    @sut = new InstancesController {@UUID, MONGODB_URI, REDIS_URI}
+    options = {
+      UUID: @UUID
+      mongoDbUri: 'localhost'
+      redisUri: 'localhost'
+      octobluUrl: 'http://yahho.com'
+      flowLoggerUuid: 'flow-logger-uuid'
+      nanocyteEngineUrl: 'https://genisys.com'
+      intervalServiceUri: 'http://interval.octoblu.dev'
+      nodeRegistryUrl: 'http://registry.octoblu.dev'
+    }
+    @sut = new InstancesController options
     @_createNanocyteDeployer = sinon.stub @sut, '_createNanocyteDeployer'
     @_createNanocyteDeployer.returns @nanocyteDeployer
     @_createMeshbluHttp = sinon.stub @sut, '_createMeshbluHttp'
@@ -73,6 +78,7 @@ describe '/instances', ->
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-flow-uuid/instances/an-instance-uuid/messages'
           flowLoggerUuid: 'flow-logger-uuid'
+          intervalServiceUri: 'http://interval.octoblu.dev'
 
       describe 'and startFlow fails', ->
         beforeEach ->
@@ -142,6 +148,7 @@ describe '/instances', ->
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-other-flow-uuid/instances/an-instance-uuid/messages'
           flowLoggerUuid: 'flow-logger-uuid'
+          intervalServiceUri: 'http://interval.octoblu.dev'
 
       it 'should respond with a 201', ->
         expect(@response.status).to.have.been.calledWith 201
@@ -183,6 +190,7 @@ describe '/instances', ->
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-other-new-flow-uuid/instances/a-new-instance-uuid/messages'
           flowLoggerUuid: 'flow-logger-uuid'
+          intervalServiceUri: 'http://interval.octoblu.dev'
 
       it 'should respond with a 201', ->
         expect(@response.status).to.have.been.calledWith 201
@@ -225,6 +233,7 @@ describe '/instances', ->
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-flow-uuid/instances/an-instance-uuid/messages'
           flowLoggerUuid: 'flow-logger-uuid'
+          intervalServiceUri: 'http://interval.octoblu.dev'
 
       it 'should call nanocyteDeployer.stopFlow', ->
         expect(@nanocyteDeployer.stopFlow).to.have.been.called
@@ -271,6 +280,7 @@ describe '/instances', ->
           octobluUrl: 'http://yahho.com'
           forwardUrl: 'https://genisys.com/flows/some-flow-uuid/instances/an-instance-uuid/messages'
           flowLoggerUuid: 'flow-logger-uuid'
+          intervalServiceUri: 'http://interval.octoblu.dev'
 
       it 'should respond with a 422 and Error', ->
         expect(@response.status).to.have.been.calledWith 422

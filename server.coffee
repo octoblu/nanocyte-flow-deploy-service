@@ -11,14 +11,29 @@ IotAppController    = require './src/controllers/iot-app-controller'
 debug               = require('debug')('nanocyte-flow-deploy-service')
 cors                = require 'cors'
 
-MONGODB_URI = process.env.MONGODB_URI
-REDIS_URI = process.env.REDIS_URI
+serverOptions = {
+  mongoDbUri: process.env.MONGODB_URI
+  redisUri: process.env.REDIS_URI
+  intervalServiceUri: process.env.INTERVAL_SERVICE_URI
+  octobluUrl: process.env.OCTOBLU_URL
+  flowLoggerUuid: process.env.FLOW_LOGGER_UUID
+  nanocyteEngineUrl: process.env.NANOCYTE_ENGINE_URL
+  nodeRegistryUrl: process.env.NODE_REGISTRY_URL
+  awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID
+  awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+}
 
-throw new Error 'MONGODB_URI is required' unless MONGODB_URI?
-throw new Error 'REDIS_URI is required' unless REDIS_URI?
+throw new Error 'MONGODB_URI is required' unless serverOptions.mongoDbUri?
+throw new Error 'REDIS_URI is required' unless serverOptions.redisUri?
+throw new Error 'INTERVAL_SERVICE_URI is required' unless serverOptions.intervalServiceUri?
+throw new Error 'OCTOBLU_URL is required' unless serverOptions.octobluUrl?
+throw new Error 'NANOCYTE_ENGINE_URL is required' unless serverOptions.nanocyteEngineUrl?
+throw new Error 'NODE_REGISTRY_URL is required' unless serverOptions.nodeRegistryUrl?
+throw new Error 'AWS_ACCESS_KEY_ID is required' unless serverOptions.awsAccessKeyId?
+throw new Error 'AWS_SECRET_ACCESS_KEY is required' unless serverOptions.awsSecretAccessKey?
 
-instancesController = new InstancesController {MONGODB_URI, REDIS_URI}
-iotAppController    = new IotAppController {MONGODB_URI, REDIS_URI}
+instancesController = new InstancesController serverOptions
+iotAppController    = new IotAppController serverOptions
 
 PORT  = process.env.PORT ? 80
 
