@@ -45,14 +45,13 @@ app.use meshbluHealthcheck()
 app.use expressVersion({format: '{"version": "%s"}'})
 app.use morgan 'dev'
 app.use errorHandler()
-app.use meshbluAuth.retrieve()
+app.use meshbluAuth.get()
 app.use meshbluAuth.gateway()
 app.use bodyParser.urlencoded limit: '50mb', extended : true
 app.use bodyParser.json limit : '50mb'
 
 app.post '/bluprint/:appId/:version',      iotAppController.publish
 app.post '/bluprint/:appId/:version/link', iotAppController.link
-
 
 app.post '/flows/:flowId/instances',      instancesController.create
 app.delete '/flows/:flowId/instances',    instancesController.destroy

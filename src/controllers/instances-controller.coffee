@@ -86,7 +86,6 @@ class InstancesController
     meshbluConfig = new MeshbluConfig
       uuid: userUuid
       token: userToken
-      server_env_name: 'MESHBLU_MESSAGES_SERVER'
 
     dependencies =
       configurationGenerator: new ConfigurationGenerator
@@ -99,7 +98,7 @@ class InstancesController
     new @NanocyteDeployer options, dependencies
 
   _createMeshbluHttp: (options) =>
-    meshbluJSON = _.assign {}, @meshbluConfig.toJSON(), options
+    meshbluJSON = _.defaults options, @meshbluConfig.toJSON()
     new MeshbluHttp meshbluJSON
 
   _buildOptions: (req, result) =>

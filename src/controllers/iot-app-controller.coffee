@@ -79,8 +79,7 @@ class IotAppController
   _createIotAppPublisher: (options) =>
     { appId, appToken } = options
 
-    meshbluJSON =
-      _.extend new MeshbluConfig().toJSON(), {uuid:  appId, token: appToken}
+    meshbluJSON = _.defaults {uuid:  appId, token: appToken}, new MeshbluConfig().toJSON()
 
     configurationSaver     = new ConfigurationSaver {@client, @datastore}
     configurationGenerator = new ConfigurationGenerator {meshbluJSON}
