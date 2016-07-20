@@ -1,26 +1,24 @@
 _                      = require 'lodash'
 async                  = require 'async'
 debug                  = require('debug')('nanocyte-flow-deploy-service:iot-app-controller')
-redis                  = require 'ioredis'
 MeshbluConfig          = require 'meshblu-config'
 MeshbluHttp            = require 'meshblu-http'
 
 mongojs                = require 'mongojs'
 Datastore              = require 'meshblu-core-datastore'
 
-ConfigurationGenerator = require 'nanocyte-configuration-generator'
-ConfigurationSaver     = require 'nanocyte-configuration-saver-redis'
-IotAppPublisher        = require 'nanocyte-iot-app-publisher'
+ConfigurationGenerator    = require 'nanocyte-configuration-generator'
+IotAppConfigurationSaver  = require 'iot-app-configuration-saver'
+IotAppPublisher           = require 'nanocyte-iot-app-publisher'
 
 class IotAppController
   constructor: (dependencies={}) ->
     {@NanocyteDeployer, @UUID, mongoDbUri, redisUri} = dependencies
     @meshbluConfig             = new MeshbluConfig
-    @client                    = redis.createClient redisUri, dropBufferSupport: true
     database                   = mongojs mongoDbUri
     @datastore = new Datastore
       database: database
-      collection: 'iot-apps'
+      collection: 'instances'
 
     setInterval =>
       database.runCommand {ping: 1}, (error) =>
@@ -40,7 +38,7 @@ class IotAppController
 
     return res.sendStatus(422) unless configSchema? and instanceId?
 
-    configurationSaver = new ConfigurationSaver {@client}
+    configurationSaver = new IotAppConfigurationSaver {@datastore}
 
     stopMessage =
       devices: [flowId]
@@ -51,7 +49,7 @@ class IotAppController
       metadata: to: nodeId: 'engine-start'
 
     steps = [
-      async.apply configurationSaver.linkToBluprint, {flowId, instanceId, appId, version, configSchema, config}
+      async.apply configurationSaver.linkToBluprint, {appId, config, configSchema, flowId, instanceId, version}
       async.apply meshbluHttp.message, stopMessage
     ]
 
@@ -86,7 +84,7 @@ class IotAppController
 
     meshbluJSON = _.defaults {uuid:  appId, token: appToken}, new MeshbluConfig().toJSON()
 
-    configurationSaver     = new ConfigurationSaver {@client, @datastore}
+    configurationSaver     = new IotAppConfigurationSaver {@datastore}
     configurationGenerator = new ConfigurationGenerator {meshbluJSON}
 
     new IotAppPublisher options, {configurationSaver, configurationGenerator}
