@@ -35,8 +35,9 @@ class IotAppController
     flowId           = req.meshbluAuth.uuid
     meshbluHttp      = @_createMeshbluHttp req.meshbluAuth
 
-    {instanceId} = config
+    {instanceId, online} = config
     configSchema = config.schemas?.configure?.bluprint
+
     return res.sendStatus(422) unless configSchema? and instanceId?
 
     configurationSaver = new ConfigurationSaver {@client}
@@ -49,11 +50,15 @@ class IotAppController
       devices: [flowId]
       metadata: to: nodeId: 'engine-start'
 
-    async.series [
+    steps = [
       async.apply configurationSaver.linkToBluprint, {flowId, instanceId, appId, version, configSchema, config}
       async.apply meshbluHttp.message, stopMessage
-      async.apply meshbluHttp.message, startMessage
-    ], (error) =>
+    ]
+
+    unless online == false
+      steps.push async.apply meshbluHttp.message, startMessage
+
+    async.series steps, (error) =>
       return res.status(error.code || 500).send({error}) if error?
       res.sendStatus 201
 
