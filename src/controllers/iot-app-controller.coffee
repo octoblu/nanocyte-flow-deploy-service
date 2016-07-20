@@ -37,6 +37,7 @@ class IotAppController
     configSchema = config.schemas?.configure?.bluprint
 
     return res.sendStatus(422) unless configSchema? and instanceId?
+    return res.sendStatus(200) if online == false
 
     configurationSaver = new IotAppConfigurationSaver {@datastore}
 
@@ -51,11 +52,8 @@ class IotAppController
     steps = [
       async.apply configurationSaver.linkToBluprint, {appId, config, configSchema, flowId, instanceId, version}
       async.apply meshbluHttp.message, stopMessage
+      async.apply meshbluHttp.message, startMessage
     ]
-
-    unless online == false
-      steps.push async.apply meshbluHttp.message, startMessage
-
     async.series steps, (error) =>
       return res.status(error.code || 500).send({error}) if error?
       res.sendStatus 201
