@@ -37,7 +37,11 @@ class IotAppController
     configSchema = config.schemas?.configure?.bluprint
 
     return res.sendStatus(422) unless configSchema? and instanceId?
-    return res.sendStatus(200) if online == false
+    console.log {online}
+    if online == false
+      return @_unlink {meshbluHttp, flowId, instanceId}, (error) =>
+        return res.status(error.code || 500).send({error}) if error?
+        res.sendStatus 200
 
     configurationSaver = new IotAppConfigurationSaver {@datastore}
 
@@ -54,9 +58,24 @@ class IotAppController
       async.apply meshbluHttp.message, stopMessage
       async.apply meshbluHttp.message, startMessage
     ]
+
     async.series steps, (error) =>
       return res.status(error.code || 500).send({error}) if error?
-      res.sendStatus 201
+      res.sendStatus 200
+
+  _unlink: ({meshbluHttp, flowId, instanceId}, callback) =>
+    configurationSaver = new IotAppConfigurationSaver {@datastore}
+
+    stopMessage =
+      devices: [flowId]
+      metadata: to: nodeId: 'engine-stop'
+
+    steps = [
+      async.apply meshbluHttp.message, stopMessage
+      async.apply configurationSaver.unlinkToBluprint, {flowId, instanceId}
+    ]
+
+    async.series steps, callback
 
   publish: (req, res) =>
     {appId, version}  = req.params

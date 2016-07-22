@@ -1,6 +1,6 @@
 {
   "name": "nanocyte-flow-deploy-service",
-  "version": "5.6.3",
+  "version": "5.6.4",
   "description": "Flow Deploy Service for Nanocyte",
   "engines": {
     "node": ">=4.0.0"
@@ -37,7 +37,7 @@
     "express-meshblu-healthcheck": "^1.0.1",
     "express-package-version": "0.0.2",
     "ioredis": "^2.2.0",
-    "iot-app-configuration-saver": "^1.1.1",
+    "iot-app-configuration-saver": "^1.1.2",
     "lodash": "^4.13.1",
     "meshblu-config": "^5.1.2",
     "meshblu-core-datastore": "^4.6.0",
