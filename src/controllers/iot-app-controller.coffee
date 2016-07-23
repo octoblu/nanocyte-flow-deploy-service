@@ -34,8 +34,7 @@ class IotAppController
     meshbluHttp      = @_createMeshbluHttp req.meshbluAuth
 
     {instanceId, online} = config
-    configSchema = config.schemas?.configure?.bluprint
-
+    configSchema = config.schemas?.configure?.default    
     return res.sendStatus(422) unless configSchema? and instanceId?
 
     if online == false
