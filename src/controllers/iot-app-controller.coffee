@@ -34,7 +34,7 @@ class IotAppController
     meshbluHttp      = @_createMeshbluHttp req.meshbluAuth
 
     {instanceId, online} = config
-    configSchema = config.schemas?.configure?.default    
+    configSchema = config.schemas?.configure?.default
     return res.sendStatus(422) unless configSchema? and instanceId?
 
     if online == false
@@ -87,7 +87,8 @@ class IotAppController
       debug("Error on generate and store token", error) if error?
       return res.status(error.code ? 403).send(error.message) if error?
 
-      options         = appId: appId, appToken: token, flowId: flowId, version: version
+      options = appId: appId, appToken: token, flowId: flowId, version: version
+      debug "createIotAppPublisher", options
       iotAppPublisher = @_createIotAppPublisher options
 
       iotAppPublisher.publish (error) =>
