@@ -40,7 +40,7 @@
     "iot-app-configuration-saver": "^2.1.0",
     "lodash": "^4.13.1",
     "meshblu-config": "^5.1.2",
-    "meshblu-core-datastore": "^4.6.0",
+    "meshblu-core-datastore": "^4.6.2",
     "meshblu-http": "^7.0.0",
     "mongojs": "^2.4.0",
     "morgan": "^1.6.1",
