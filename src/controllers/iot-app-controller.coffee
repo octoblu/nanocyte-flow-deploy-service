@@ -28,10 +28,12 @@ class IotAppController
     , 10 * 1000
 
   link: (req, res) =>
-    {appId, version} = req.params
+    {appId}          = req.params
     config           = req.body
     flowId           = req.meshbluAuth.uuid
     meshbluHttp      = @_createMeshbluHttp req.meshbluAuth
+
+    version = 'versions-where-were-going-we-dont-need-versions'
 
     {instanceId, online} = config
     configSchema = config.schemas?.configure?.default
@@ -77,8 +79,9 @@ class IotAppController
     async.series steps, callback
 
   publish: (req, res) =>
-    {appId, version}  = req.params
+    {appId}  = req.params
     {flowId} = req.body
+    version = 'versions-where-were-going-we-dont-need-versions'
 
     debug("Publishing for AppId #{appId} Version: #{version}")
     meshbluHttp       = @_createMeshbluHttp req.meshbluAuth
@@ -87,8 +90,7 @@ class IotAppController
       debug("Error on generate and store token", error) if error?
       return res.status(error.code ? 403).send(error.message) if error?
 
-      options = appId: appId, appToken: token, flowId: flowId, version: version
-      debug "createIotAppPublisher", options
+      options         = appId: appId, appToken: token, flowId: flowId, version: version
       iotAppPublisher = @_createIotAppPublisher options
 
       iotAppPublisher.publish (error) =>
