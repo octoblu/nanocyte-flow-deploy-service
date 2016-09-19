@@ -2,10 +2,13 @@
 Flow Deploy Service
 
 [![Build Status](https://travis-ci.org/octoblu/nanocyte-flow-deploy-service.svg?branch=master)](https://travis-ci.org/octoblu/nanocyte-flow-deploy-service)
-[![Code Climate](https://codeclimate.com/github/octoblu/nanocyte-flow-deploy-service/badges/gpa.svg)](https://codeclimate.com/github/octoblu/nanocyte-flow-deploy-service)
-[![Test Coverage](https://codeclimate.com/github/octoblu/nanocyte-flow-deploy-service/badges/coverage.svg)](https://codeclimate.com/github/octoblu/nanocyte-flow-deploy-service)
-[![npm version](https://badge.fury.io/js/nanocyte-flow-deploy-service.svg)](http://badge.fury.io/js/nanocyte-flow-deploy-service)
-[![Gitter](https://badges.gitter.im/octoblu/help.svg)](https://gitter.im/octoblu/help)
+[![Test Coverage](https://codecov.io/gh/octoblu/nanocyte-flow-deploy-service/branch/master/graph/badge.svg)](https://codecov.io/gh/octoblu/nanocyte-flow-deploy-service)
+[![Dependency status](http://img.shields.io/david/octoblu/nanocyte-flow-deploy-service.svg?style=flat)](https://david-dm.org/octoblu/nanocyte-flow-deploy-service)
+[![devDependency Status](http://img.shields.io/david/dev/octoblu/nanocyte-flow-deploy-service.svg?style=flat)](https://david-dm.org/octoblu/nanocyte-flow-deploy-service#info=devDependencies)
+[![Slack Status](http://community-slack.octoblu.com/badge.svg)](http://community-slack.octoblu.com)
+
+[![NPM](https://nodei.co/npm/nanocyte-flow-deploy-service.svg?style=flat)](https://npmjs.org/package/nanocyte-flow-deploy-service)
+
 
 ## How to run
 > Also involves manual changes and running nanocyte-engine-simple
