@@ -1,25 +1,32 @@
 language: node_js
 node_js:
-- '4'
+  - '5'
 services:
-- redis
+  - redis
 addons:
   code_climate:
     repo_token: ac97d4c4094784043c17b48e41bc354e688835b1a8e94a74f15b54d3d9386b33
 before_script:
-- npm install -g codeclimate-test-reporter
+  - npm install -g codeclimate-test-reporter
 after_script:
-- codeclimate-test-reporter < coverage/lcov.info
+  - codeclimate-test-reporter < coverage/lcov.info
 deploy:
   provider: npm
   email: serveradmin@octoblu.com
   api_key:
-    secure: c7t0u/IxxpjQa2Jgqjj60Y761FmXyIwLK2cBBuE9oOh+jc8ZV54MKGOyUGAwqVive7zuMrdhJ4rBqDM9SAP4Q8o6aJmmeBjNeaJyYi6Y7bhFcQyhZSotGb9qZAQ58NQ4JrHZfJ2mhP5YK8bEnrpO8dI1xS7PUqjPWSn7LuQSS0SLZuXNbFf76dg+FiAwkgMH0J2yUq+zTcSqewEx4sl4Z8451HbcY22/heu9DVpBX3dBs8LTWcI1QPzH+DrKRc5M4deWEgUhQQR5d5EyUeqUfSwRVycBXtBSC/rtHOa3iSucy3P8cBGJKQAiJqaQsRyqYRJK2XIC6uChsq9xlCsqgX0jsE2XxAVwOXPde9nkv4lEEcVkhwaO4U0hVp0izUWB+rE9dPHqv/QhFp3USsTj13XTuBYrdQmBLO33SdRyXMLZEJsx9VmttgApQKWKYrFrPWyOkDpOWH445zBS5xmUI4CjSMFsVtkVp7NDfGhcIq62HMUUj7IwcMYyU2oOueFMNfeeDwaeOKZ7/26BAms55r4b+9VlBU1o4v6mGI+SC6//G1UKBC6iNemzZcVZKxKT0sD1fzXlUVSzP+vBozv5jCp1xnlqQM/VxgmQljVoCMMwZ7km2urIIFjNUmSkLEiwMOhT8inakzapMompEAY7YSF4U+2jDdYygFPgwrcs3rA=
-  on:
+    secure: >-
+      c7t0u/IxxpjQa2Jgqjj60Y761FmXyIwLK2cBBuE9oOh+jc8ZV54MKGOyUGAwqVive7zuMrdhJ4rBqDM9SAP4Q8o6aJmmeBjNeaJyYi6Y7bhFcQyhZSotGb9qZAQ58NQ4JrHZfJ2mhP5YK8bEnrpO8dI1xS7PUqjPWSn7LuQSS0SLZuXNbFf76dg+FiAwkgMH0J2yUq+zTcSqewEx4sl4Z8451HbcY22/heu9DVpBX3dBs8LTWcI1QPzH+DrKRc5M4deWEgUhQQR5d5EyUeqUfSwRVycBXtBSC/rtHOa3iSucy3P8cBGJKQAiJqaQsRyqYRJK2XIC6uChsq9xlCsqgX0jsE2XxAVwOXPde9nkv4lEEcVkhwaO4U0hVp0izUWB+rE9dPHqv/QhFp3USsTj13XTuBYrdQmBLO33SdRyXMLZEJsx9VmttgApQKWKYrFrPWyOkDpOWH445zBS5xmUI4CjSMFsVtkVp7NDfGhcIq62HMUUj7IwcMYyU2oOueFMNfeeDwaeOKZ7/26BAms55r4b+9VlBU1o4v6mGI+SC6//G1UKBC6iNemzZcVZKxKT0sD1fzXlUVSzP+vBozv5jCp1xnlqQM/VxgmQljVoCMMwZ7km2urIIFjNUmSkLEiwMOhT8inakzapMompEAY7YSF4U+2jDdYygFPgwrcs3rA=
+  'on':
     tags: true
     branches: true
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+  - npm run coverage
+  - 'npm run mocha:json'
+  - 'bash <(curl -s https://codecov.io/bash)'
+  - 'bash <(curl -s https://codecov.octoblu.com/bash)'
 branches:
   only:
-  - "/^v[0-9]/"
+    - '/^v[0-9]/'
+notifications:
+  webhooks:
+    - 'https://beekeeper.octoblu.com/webhooks/travis:ci'
