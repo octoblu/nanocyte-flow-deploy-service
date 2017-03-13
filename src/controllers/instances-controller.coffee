@@ -61,7 +61,9 @@ class InstancesController
         async.apply nanocyteDeployer.startFlow
       ], (error) =>
         debug benchmark.toString()
-        return res.status(error.code ? 422).send(error.message) if error?
+        if error?
+          console.error error.stack
+          return res.status(error.code ? 422).send(error.message)
         res.status(201).location("/flows/#{options.flowUuid}/instances/#{options.instanceId}").end()
 
   destroy: (req, res) =>
@@ -78,7 +80,9 @@ class InstancesController
         async.apply nanocyteDeployer.destroy
       ], (error) =>
         debug benchmark.toString()
-        return res.status(error.code ? 422).send(error.message) if error?
+        if error?
+          console.error error.stack
+          return res.status(error.code ? 422).send(error.message)
         res.status(204).end()
 
   _createNanocyteDeployer: (options) =>
